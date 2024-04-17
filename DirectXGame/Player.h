@@ -2,6 +2,10 @@
 #include "Model.h"
 #include "WorldTransform.h"
 #include "cassert"
+#include "Input.h"
+#include <MyMath.h>
+#include <ImGuiManager.h>
+
 
 /// <summary>
 /// 自キャラ
@@ -10,6 +14,9 @@
 class Player {
 
 	private:
+		//キーボード入力
+	    Input* input_ = nullptr;
+
 		//ワールド変換データ
 	    WorldTransform worldTransform_;
 		//モデル
