@@ -1,5 +1,10 @@
 #include <Player.h>
 
+Player::~Player() {
+	//bulletの開放
+	delete bullet_;
+}
+
 void Player::initialize(Model* model, uint32_t textureHandle) {
 	/// 1.nullptrチェック
 	assert(model);
@@ -119,6 +124,13 @@ void Player::Rotate() {
 void Player::Attack() {
 	// SPACEキーで発射
 	if (input_->TriggerKey(DIK_SPACE)) {
+
+		//弾丸があれば解放する
+		if (bullet_) {
+			delete bullet_;
+			bullet_ = nullptr;
+		}
+
 	//弾丸を生成・初期化する
 		PlayerBullet* newBullet = new PlayerBullet();
 	newBullet->Initialize(model_,worldTransform_.translation_);
