@@ -48,8 +48,8 @@ void GameScene::Update() {
 	///	デバッグカメラ
 	//
 
-	/// SPACEキーでデバッグカメラの有効フラグをトグル
-	if (input_->TriggerKey(DIK_SPACE)) {
+	/// ENTERキーでデバッグカメラの有効フラグをトグル
+	if (input_->TriggerKey(DIK_RETURN)) {
 		if (isDebugCameraActive_) {
 			isDebugCameraActive_ = false;
 		} else {
