@@ -1,8 +1,10 @@
 #include <Player.h>
 
 Player::~Player() {
-	//bulletの開放
-	delete bullet_;
+	for (PlayerBullet* bullet : bullets_) {
+		// bulletの開放
+		delete bullet;
+	}
 }
 
 void Player::initialize(Model* model, uint32_t textureHandle) {
@@ -79,10 +81,9 @@ void Player::Update() {
 	//
 	Attack();
 
-	if (bullet_) {
-		bullet_->Update();
+	for (PlayerBullet* bullet : bullets_) {
+		bullet->Update();
 	}
-
 
 
 
@@ -104,8 +105,8 @@ void Player::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 	
 	///弾丸を表描画
-	if (bullet_) {
-		bullet_->Draw(viewProjection);
+	for(PlayerBullet* bullet :bullets_) {
+		bullet->Draw(viewProjection);
 	}
 
 };
@@ -125,16 +126,14 @@ void Player::Attack() {
 	// SPACEキーで発射
 	if (input_->TriggerKey(DIK_SPACE)) {
 
-		//弾丸があれば解放する
-		if (bullet_) {
-			delete bullet_;
-			bullet_ = nullptr;
-		}
+		//自キャラの座標をコピー
+		
+		
 
 	//弾丸を生成・初期化する
 		PlayerBullet* newBullet = new PlayerBullet();
 	newBullet->Initialize(model_,worldTransform_.translation_);
 	//弾丸を登録する
-	bullet_ = newBullet;
+	bullets_.push_back(newBullet);
 	}
 }

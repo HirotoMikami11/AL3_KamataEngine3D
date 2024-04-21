@@ -61,7 +61,7 @@ private: // メンバ変数
 	bool isDebugCameraActive_ = false;
 	//デバッグカメラ
 	DebugCamera* debugCamera_ = nullptr;
-
+	
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>

@@ -6,6 +6,7 @@
 #include "cassert"
 #include <ImGuiManager.h>
 #include <MyMath.h>
+#include <list>
 
 /// <summary>
 /// 自キャラ
@@ -60,8 +61,7 @@ private:
 	uint32_t textureHandle_ = 0u;
 
 	/// 弾丸
-	PlayerBullet* bullet_ = nullptr;
-
+	std::list<PlayerBullet*> bullets_;
 
 
 
