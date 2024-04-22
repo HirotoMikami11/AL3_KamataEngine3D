@@ -6,10 +6,20 @@
 #include "cassert"
 #include <ImGuiManager.h>
 #include <MyMath.h>
+
+#include <EnemyBullet.h>
+
+
 /// <summary>
 /// 敵
 /// </summary>
 class Enemy {
+public:
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~Enemy();
+
 private:
 	/// <summary>
 	/// フェーズ
@@ -31,8 +41,14 @@ private:
 	//フェーズ
 	Phase phase_ = Phase::Approach;
 
+	/// 弾丸
+	std::list<EnemyBullet*> bullets_;
+	static const int kfireInterval = 60;
+	int32_t fireTimer_ = kfireInterval;
 	// メンバ関数ポインタのテーブル
 	static void (Enemy::*spFuncTable[])();
+
+	void Fire();
 
 public:
 	void Initialize(Model* model, const Vector3& position,const Vector3& velocity);
@@ -50,7 +66,5 @@ public:
 	/// </summary>
 
 	void LeaveAction(); 
-
-
 
 };
