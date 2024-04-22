@@ -10,6 +10,7 @@
 #include "DebugCamera.h"
 
 #include <Player.h>
+#include <Enemy.h>
 
 /// <summary>
 /// ゲームシーン
@@ -48,6 +49,7 @@ private: // メンバ変数
 	Audio* audio_ = nullptr;
 
 	Player* player_ = nullptr;
+	Enemy* enemy_ = nullptr;
 
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0;

@@ -7,7 +7,7 @@ Player::~Player() {
 	}
 }
 
-void Player::initialize(Model* model, uint32_t textureHandle) {
+void Player::Initialize(Model* model, uint32_t textureHandle) {
 	/// 1.nullptrチェック
 	assert(model);
 

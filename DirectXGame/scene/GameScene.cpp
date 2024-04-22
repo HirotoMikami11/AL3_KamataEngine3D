@@ -10,6 +10,8 @@ GameScene::~GameScene() {
 	delete model_;
 	delete player_;
 	delete debugCamera_;
+
+	delete enemy_;
 }
 
 void GameScene::Initialize() {
@@ -28,7 +30,11 @@ void GameScene::Initialize() {
 	// 自キャラの生成
 	player_ = new Player();
 	// 自キャラの初期化
-	player_->initialize(model_, textureHandle_);
+	player_->Initialize(model_, textureHandle_);
+
+	//敵の初期化
+	enemy_ = new Enemy();
+	enemy_->Initialize(model_, {0, 10, 300}, {0,0,-1});
 
 	// デバッグカメラの生成(引数は画面の横幅、縦幅)
 	debugCamera_ = new DebugCamera(WinApp::kWindowWidth, WinApp::kWindowHeight);
@@ -42,6 +48,10 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 
 	player_->Update();
+
+	if (enemy_!=nullptr) {
+		enemy_->Update();
+	}
 
 #ifdef _DEBUG
 	//
@@ -102,7 +112,9 @@ void GameScene::Draw() {
 
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
-
+	if (enemy_ != nullptr) {
+		enemy_->Draw(viewProjection_);
+	}
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
