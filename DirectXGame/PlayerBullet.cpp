@@ -1,6 +1,6 @@
 #include "PlayerBullet.h"
 
-void PlayerBullet::Initialize(Model* model, const Vector3& position) {
+void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vector3& velocity) {
 	/// 1.nullptrチェック
 	assert(model);
 
@@ -12,16 +12,26 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position) {
 
 	/// 3.ワールド変換の初期化
 	worldTransform_.Initialize();
-	//引数で受け取った初期座標をセットする
+	// 引数で受け取った初期座標をセットする
 	worldTransform_.translation_ = position;
+	//　引数で受け取った速度をメンバ変数に代入
+	velocity_ = velocity;
 }
 
 void PlayerBullet::Update() { 
+	//座標を移動させる(１フレーム分の移動量を足しこむ)
+	worldTransform_.translation_ += velocity_;
+	//行列を更新
 	worldTransform_.UpdateMatrix();
+
+	//時間経過で消える
+	if (--deathTimer_<=0) {
+		isDead_ = true;
+	}
+
 }
 
 void PlayerBullet::Draw(const ViewProjection& viewProjection) {
 	// 3Dモデルを描画
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 }
-

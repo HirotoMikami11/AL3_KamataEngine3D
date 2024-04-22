@@ -72,3 +72,21 @@ float Vector3Dot(const Vector3& v1, const Vector3& v2);
 float Vector3Length(const Vector3& v);
 // 正規化
 Vector3 Vector3Normalize(const Vector3& v);
+
+//ベクトル変換
+Vector3 TransforNormal(const Vector3& v,const Matrix4x4& m);
+
+
+
+//
+///	演算の死のオーバーロード
+// 
+
+//加算
+Vector3& operator+=(Vector3& v1,Vector3&v2);
+
+//減算
+Vector3& operator-=(Vector3& v1, Vector3& v2);
+
+
+
