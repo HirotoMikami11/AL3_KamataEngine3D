@@ -31,6 +31,9 @@ private:
 	//フェーズ
 	Phase phase_ = Phase::Approach;
 
+	// メンバ関数ポインタのテーブル
+	static void (Enemy::*spFuncTable[])();
+
 public:
 	void Initialize(Model* model, const Vector3& position,const Vector3& velocity);
 
@@ -40,13 +43,14 @@ public:
 	/// <summary>
 	/// Approachフェーズの処理
 	/// </summary>
-	/// <param name="Velocity">Approachフェーズの速度</param>
-	void ApproachAction(const Vector3& velocity); 
+	
+	void ApproachAction(); 
 	/// <summary>
 	/// Leaveフェーズの処理
 	/// </summary>
-	/// <param name="Velocity">Leaveフェーズの速度</param>
-	void LeaveAction(const Vector3& velocity); 
-	public:
+
+	void LeaveAction(); 
+
+
 
 };
