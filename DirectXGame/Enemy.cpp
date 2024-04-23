@@ -1,10 +1,12 @@
 #include "Enemy.h"
+
 Enemy ::~Enemy() {
 	for (EnemyBullet* bullet : bullets_) {
 
 		delete bullet;
 	}
 }
+
 void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& velocity) {
 	// nullcheak
 	assert(model);
@@ -19,8 +21,11 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 	velocity_ = velocity;
 	worldTransform_.scale_ = {3, 3, 3};
 }
+
+
 // メンバ関数ポインタのテーブル
 void (Enemy::*Enemy::spFuncTable[])() = {&Enemy::ApproachAction, &Enemy::LeaveAction};
+
 
 void Enemy::Update() {
 	//
@@ -47,13 +52,15 @@ void Enemy::Update() {
 	worldTransform_.UpdateMatrix();
 }
 
-void Enemy::Draw(const ViewProjection& viewProjection) {
+
+void Enemy::Draw( ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 
 	for (EnemyBullet* bullet : bullets_) {
 		bullet->Draw(viewProjection);
 	}
 }
+
 
 void Enemy::ApproachAction() {
 
@@ -69,11 +76,13 @@ void Enemy::ApproachAction() {
 	}
 }
 
+
 void Enemy::LeaveAction() {
 	velocity_ = {0.5f, 0.5f, -0.5f};
 	// 座標を移動させる(１フレーム分の移動量を足しこむ)
 	worldTransform_.translation_ += velocity_;
 }
+
 
 void Enemy::Fire() {
 	//

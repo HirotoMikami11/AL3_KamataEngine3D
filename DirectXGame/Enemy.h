@@ -2,31 +2,27 @@
 
 #include "Model.h"
 #include "WorldTransform.h"
-#include <TextureManager.h>
 #include "cassert"
 #include <ImGuiManager.h>
 #include <MyMath.h>
+#include <TextureManager.h>
 
 #include <EnemyBullet.h>
 
+// 自機クラスの前方宣言
+class Player;
 
 /// <summary>
 /// 敵
 /// </summary>
 class Enemy {
-public:
-	/// <summary>
-	/// デストラクタ
-	/// </summary>
-	~Enemy();
-
 private:
 	/// <summary>
 	/// フェーズ
 	/// </summary>
 	enum class Phase {
-		Approach,	//接近する
-		Leave		//離脱する
+		Approach, // 接近する
+		Leave     // 離脱する
 	};
 
 	// ワールド変換データ
@@ -37,34 +33,60 @@ private:
 	uint32_t textureHandle_ = 0u;
 	// 速度
 	Vector3 velocity_;
-
-	//フェーズ
+	// フェーズ
 	Phase phase_ = Phase::Approach;
 
+	//
 	/// 弾丸
+	//
+
 	std::list<EnemyBullet*> bullets_;
+	// 発射までのインターバル
 	static const int kfireInterval = 60;
+	// 発射するタイマー
 	int32_t fireTimer_ = kfireInterval;
 	// メンバ関数ポインタのテーブル
 	static void (Enemy::*spFuncTable[])();
 
+
+	/// <summary>
+	/// 弾を撃つ
+	/// </summary>
 	void Fire();
 
 public:
-	void Initialize(Model* model, const Vector3& position,const Vector3& velocity);
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~Enemy();
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="model">モデル</param>
+	/// <param name="position">座標</param>
+	/// <param name="velocity">速さ</param>
+	void Initialize(Model* model, const Vector3& position, const Vector3& velocity);
+
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
 
-	void Draw(const ViewProjection& viewProjection);
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name="viewProjection">ビュープロジェクション（参照渡し）</param>
+	void Draw(ViewProjection& viewProjection);
+
 	/// <summary>
 	/// Approachフェーズの処理
 	/// </summary>
-	
-	void ApproachAction(); 
+	void ApproachAction();
+
 	/// <summary>
 	/// Leaveフェーズの処理
 	/// </summary>
-
-	void LeaveAction(); 
+	void LeaveAction();
 
 };

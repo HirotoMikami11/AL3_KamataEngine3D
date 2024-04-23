@@ -3,6 +3,7 @@
 #include "WorldTransform.h"
 #include <TextureManager.h>
 #include <MyMath.h>
+
 class EnemyBullet {
 private:
 
@@ -31,12 +32,13 @@ public:
 	/// 更新
 	/// </summary>
 	void Update();
+
 	/// <summary>
 	/// 描画
 	/// </summary>
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	void Draw(const ViewProjection& viewProjection);
 
-		// getter
+	// getter
 	bool IsDead() const { return isDead_; };
 };
