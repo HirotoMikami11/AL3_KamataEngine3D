@@ -36,8 +36,6 @@ void Player::Update() {
 		return false;
 	});
 
-
-
 	//
 	///	キーボード入力によって回転ベクトルを変更する処理
 	//
@@ -137,13 +135,25 @@ void Player::Attack() {
 		const float kBulletSpeed = 1.0f;
 		Vector3 velocity(0, 0, kBulletSpeed);
 
-		//速度ベクトルを自機の向きに合わせて回転させる
-		velocity = TransforNormal(velocity,worldTransform_.matWorld_);
+		// 速度ベクトルを自機の向きに合わせて回転させる
+		velocity = TransforNormal(velocity, worldTransform_.matWorld_);
 
 		// 弾丸を生成・初期化する
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, worldTransform_.translation_,velocity);
+		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
 		// 弾丸を登録する
 		bullets_.push_back(newBullet);
 	}
+}
+
+Vector3 Player::GetWorldPosition() {
+	//ワールド座標を入れる変数
+	Vector3 worldPos;
+
+	// ワールド行列の平行移動成分を取得
+	worldPos.x = worldTransform_.translation_.x;
+	worldPos.y = worldTransform_.translation_.y;
+	worldPos.z = worldTransform_.translation_.z;
+
+	return worldPos;
 }

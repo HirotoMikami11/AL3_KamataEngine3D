@@ -10,6 +10,7 @@
 #include <EnemyBullet.h>
 
 // 自機クラスの前方宣言
+// インクルードせずにプレイヤークラスのポインタを持つことができる
 class Player;
 
 /// <summary>
@@ -25,6 +26,9 @@ private:
 		Leave     // 離脱する
 	};
 
+	/// 自キャラ
+	Player* player_ = nullptr;
+
 	// ワールド変換データ
 	WorldTransform worldTransform_;
 	// モデル
@@ -36,9 +40,9 @@ private:
 	// フェーズ
 	Phase phase_ = Phase::Approach;
 
-	//
-	/// 弾丸
-	//
+	/*-----------------------------------------------------------------------*/
+	//								弾丸関係の変数
+	/*-----------------------------------------------------------------------*/
 
 	std::list<EnemyBullet*> bullets_;
 	// 発射までのインターバル
@@ -47,7 +51,6 @@ private:
 	int32_t fireTimer_ = kfireInterval;
 	// メンバ関数ポインタのテーブル
 	static void (Enemy::*spFuncTable[])();
-
 
 	/// <summary>
 	/// 弾を撃つ
@@ -89,4 +92,9 @@ public:
 	/// </summary>
 	void LeaveAction();
 
+
+	//setter
+	void SetPlayer(Player* player) { player_ = player; }
+	//gettrer
+	Vector3 GetWorldPosition();
 };

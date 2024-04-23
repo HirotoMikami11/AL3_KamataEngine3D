@@ -13,13 +13,30 @@
 /// </summary>
 
 class Player {
+private:
+	/// <summary>
+	/// 弾丸を発射
+	/// </summary>
+	void Attack();
+
+	// キーボード入力
+	Input* input_ = nullptr;
+
+	// ワールド変換データ
+	WorldTransform worldTransform_;
+	// モデル
+	Model* model_ = nullptr;
+	// テクスチャハンドル
+	uint32_t textureHandle_ = 0u;
+
+	/// 弾丸
+	std::list<PlayerBullet*> bullets_;
+
 public:
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
 	~Player();
-
-
 
 	/// <summary>
 	/// 初期化
@@ -44,24 +61,17 @@ public:
 	/// </summary>
 	void Rotate();
 
-private:
+
+	///getter
+	
+	
 	/// <summary>
-	/// 弾丸を発射
+	/// ワールド座標を取得
 	/// </summary>
-	void Attack();
+	Vector3 GetWorldPosition();
 
-	// キーボード入力
-	Input* input_ = nullptr;
 
-	// ワールド変換データ
-	WorldTransform worldTransform_;
-	// モデル
-	Model* model_ = nullptr;
-	// テクスチャハンドル
-	uint32_t textureHandle_ = 0u;
 
-	/// 弾丸
-	std::list<PlayerBullet*> bullets_;
 
 
 

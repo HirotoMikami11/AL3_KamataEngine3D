@@ -1,5 +1,8 @@
 #include "Enemy.h"
 
+//ヘッダ同士でインクルードしあっていないのでセーフ
+#include "Player.h"
+
 Enemy ::~Enemy() {
 	for (EnemyBullet* bullet : bullets_) {
 
@@ -85,23 +88,49 @@ void Enemy::LeaveAction() {
 
 
 void Enemy::Fire() {
-	//
+	//発射間隔
 	fireTimer_--;
 
 	if (fireTimer_ <= 0) {
-
+		//プレイヤーが存在しなければエラー
+		assert(player_);
 		// 弾丸の速度
 		const float kBulletSpeed = -1.0f;
-		Vector3 velocity(0, 0, kBulletSpeed);
+		//Vector3 velocity(0, 0, kBulletSpeed);
+		//// 速度ベクトルを敵の向きに合わせて回転させる
+		//velocity = TransforNormal(velocity, worldTransform_.matWorld_);
 
-		// 速度ベクトルを敵の向きに合わせて回転させる
-		velocity = TransforNormal(velocity, worldTransform_.matWorld_);
+		//自キャラのワールド座標を取得する
+		Vector3 playerPos_ = player_->GetWorldPosition();
+		//敵キャラのワールド座標を取得する
+		Vector3 enemyPos_ = GetWorldPosition();
+		//敵キャラ→自キャラの差分ベクトルを音求める
+		Vector3 subtractV =Vector3Subtract(enemyPos_,playerPos_);
+		//ベクトルの正規化
+		Vector3 subtractVNotmalize = Vector3Normalize(subtractV);
+		//ベクトルの長さを速さに合わせる
+		Vector3 velocity = Vector3Multiply(kBulletSpeed, subtractVNotmalize);
 
 		// 弾丸を生成・初期化する
 		EnemyBullet* newBullet = new EnemyBullet();
 		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
 		// 弾丸を登録する
 		bullets_.push_back(newBullet);
+		
+		//インターバルの値に戻す
 		fireTimer_ = kfireInterval;
 	}
+}
+
+
+Vector3 Enemy::GetWorldPosition() {
+	// ワールド座標を入れる変数
+	Vector3 worldPos;
+
+	// ワールド行列の平行移動成分を取得
+	worldPos.x = worldTransform_.translation_.x;
+	worldPos.y = worldTransform_.translation_.y;
+	worldPos.z = worldTransform_.translation_.z;
+
+	return worldPos;
 }
