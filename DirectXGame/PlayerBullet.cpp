@@ -16,7 +16,7 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vecto
 	worldTransform_.translation_ = position;
 	//　引数で受け取った速度をメンバ変数に代入
 	velocity_ = velocity;
-	radius_ = 10;
+	radius_ = 5;
 }
 
 void PlayerBullet::Update() { 

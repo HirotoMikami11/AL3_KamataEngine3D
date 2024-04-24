@@ -23,7 +23,7 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 	worldTransform_.translation_ = position;
 	velocity_ = velocity;
 	worldTransform_.scale_ = {3, 3, 3};
-	radius_ = 30;
+	radius_ = 15;
 }
 
 // メンバ関数ポインタのテーブル
