@@ -1,8 +1,7 @@
 #include "GameScene.h"
+#include "AxisIndicator.h"
 #include "TextureManager.h"
 #include <cassert>
-#include "AxisIndicator.h"
-
 
 GameScene::GameScene() {}
 
@@ -31,33 +30,30 @@ void GameScene::Initialize() {
 	// 自キャラの初期化
 	player_->Initialize(model_, textureHandle_);
 
-	//敵の初期化
+	// 敵の初期化
 	enemy_ = new Enemy();
-	enemy_->Initialize(model_, {0, 10, 300}, {0,0,-1});
-	//敵に自キャラのアドレスを渡し、GameSceneがenemy_にplayer_を貸し出す
+	enemy_->Initialize(model_, {0, 10, 300}, {0, 0, -1});
+	// 敵に自キャラのアドレスを渡し、GameSceneがenemy_にplayer_を貸し出す
 	enemy_->SetPlayer(player_);
-
-
-
 
 	// デバッグカメラの生成(引数は画面の横幅、縦幅)
 	debugCamera_ = new DebugCamera(WinApp::kWindowWidth, WinApp::kWindowHeight);
 
-	//軸方向表示の表示を有効にする
+	// 軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
-	//軸方向表示が参照するビュープロジェクションを指定する（アドレス渡し）
+	// 軸方向表示が参照するビュープロジェクションを指定する（アドレス渡し）
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
-
-
 }
 
 void GameScene::Update() {
 
 	player_->Update();
 
-	if (enemy_!=nullptr) {
+	if (enemy_ != nullptr) {
 		enemy_->Update();
 	}
+
+	CheakAllCollision();
 
 #ifdef _DEBUG
 	//
@@ -75,14 +71,14 @@ void GameScene::Update() {
 
 	/// カメラの処理
 	if (isDebugCameraActive_) {
-		//デバッグカメラの更新
+		// デバッグカメラの更新
 		debugCamera_->Update();
 		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
 		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
-		//ビュープロジェクション行列の転送
+		// ビュープロジェクション行列の転送
 		viewProjection_.TransferMatrix();
 	} else {
-		//ビュープロジェクション行列の更新と転送
+		// ビュープロジェクション行列の更新と転送
 		viewProjection_.UpdateMatrix();
 	}
 
@@ -136,5 +132,83 @@ void GameScene::Draw() {
 	// スプライト描画後処理
 	Sprite::PostDraw();
 
+#pragma endregion
+}
+
+void GameScene::CheakAllCollision() {
+	// 判定対象のAとBの座標
+	Vector3 posA, posB;
+
+	// 自機弾丸リストの取得
+	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
+	// 敵弾丸リストの取得
+	const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
+
+#pragma region "自機と敵弾丸の当たり判定"
+
+	// 自機の座標.
+	posA = player_->GetWorldPosition();
+	// 自機と敵弾丸全ての当たり判定
+	for (EnemyBullet* bullet : enemyBullets) {
+		// 敵弾丸の座標
+		posB = bullet->GetWorldPosition();
+		//自機と敵弾丸の距離
+		float AtoBDistance = Vector3Distance(posA, posB);
+		
+		//衝突していたら~~
+		if (AtoBDistance <= (player_->GetRadius() + bullet->GetRadius())) {
+		
+			// 自機の衝突時コールバックを呼び出す
+			player_->OnCollision();
+			// 自機の衝突時コールバックを呼び出す
+			bullet->OnCollision();
+
+		}
+	}
+
+#pragma endregion
+
+#pragma region "自機弾丸と敵の当たり判定"
+
+	//敵の座標
+	posB = enemy_->GetWorldPosition();
+	for (PlayerBullet* bullet : playerBullets) {
+		//自機弾丸の座標
+		posA = bullet->GetWorldPosition();
+		// 敵と自機弾丸の距離
+		float AtoBDistance = Vector3Distance(posA, posB);
+		// 衝突していたら~~
+		if (AtoBDistance <= (enemy_->GetRadius() + bullet->GetRadius())) {
+
+			// 敵の衝突時コールバックを呼び出す
+			enemy_->OnCollision();
+			// 自機弾丸の衝突時コールバックを呼び出す
+			bullet->OnCollision();
+		}
+
+	}
+#pragma endregion
+
+#pragma region "自機弾丸と敵弾丸の当たり判定"
+	// 敵の座標
+
+	for (PlayerBullet* PBullet : playerBullets) {
+		//自機弾丸の座標
+		posA = PBullet->GetWorldPosition();
+		for (EnemyBullet* EBullet : enemyBullets) {
+			// 敵弾丸の座標
+			posB = EBullet->GetWorldPosition();
+			// 自機弾丸と敵弾丸の距離
+			float AtoBDistance = Vector3Distance(posA, posB);
+			// 衝突していたら~~
+			if (AtoBDistance <= (PBullet->GetRadius() + EBullet->GetRadius())) {
+
+				// 自機弾丸の衝突時コールバックを呼び出す
+				PBullet->OnCollision();
+				// 敵弾丸の衝突時コールバックを呼び出す
+				EBullet->OnCollision();
+			}
+		}
+	}
 #pragma endregion
 }

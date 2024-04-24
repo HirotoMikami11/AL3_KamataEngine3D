@@ -24,6 +24,8 @@ private:
 	//デスフラグ
 	bool isDead_ = false;
 
+	float radius_;
+
 public:
 	/// <summary>
 	/// 初期化
@@ -44,9 +46,19 @@ public:
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	void Draw(const ViewProjection& viewProjection);
 
+	
+	/// <summary>
+	/// 衝突を検出したら呼び出されるコールバック関数
+	/// </summary>
+	void OnCollision();
+
 
 	//getter
-
+	/// <summary>
+	/// ワールド座標を取得
+	/// </summary>
+	Vector3 GetWorldPosition();
+	float GetRadius() { return radius_; };
 	bool IsDead() const { return isDead_; };
 };
 

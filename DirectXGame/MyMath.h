@@ -1,16 +1,14 @@
 #pragma once
-#include <cmath> //C++
-#include <Vector3.h> 
-#include <Matrix4x4.h> 
 #include "cassert"
-
+#include <Matrix4x4.h>
+#include <Vector3.h>
+#include <cmath> //C++
 
 /*-----------------------------------------------------------------------*/
 //
 //								4x4
 //
 /*-----------------------------------------------------------------------*/
-
 
 // 1. 行列の加法
 Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2);
@@ -47,8 +45,6 @@ Matrix4x4 MakeRotateYMatrix(float radian);
 // 3 Z軸回転行列
 Matrix4x4 MakeRotateZMatrix(float radian);
 
-
-
 // アフィン変換行列
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
 
@@ -73,20 +69,18 @@ float Vector3Length(const Vector3& v);
 // 正規化
 Vector3 Vector3Normalize(const Vector3& v);
 
-//ベクトル変換
-Vector3 TransforNormal(const Vector3& v,const Matrix4x4& m);
+// ベクトル変換
+Vector3 TransforNormal(const Vector3& v, const Matrix4x4& m);
 
-
+//3次元ベクトルの距離
+float Vector3Distance(const Vector3 v1, const Vector3 v2);
 
 //
 ///	演算の死のオーバーロード
-// 
+//
 
-//加算
-Vector3& operator+=(Vector3& v1,Vector3&v2);
+// 加算
+Vector3& operator+=(Vector3& v1, Vector3& v2);
 
-//減算
+// 減算
 Vector3& operator-=(Vector3& v1, Vector3& v2);
-
-
-

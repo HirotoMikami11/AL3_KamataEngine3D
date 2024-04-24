@@ -1,6 +1,6 @@
 #include "Enemy.h"
 
-//ヘッダ同士でインクルードしあっていないのでセーフ
+// ヘッダ同士でインクルードしあっていないのでセーフ
 #include "Player.h"
 
 Enemy ::~Enemy() {
@@ -23,12 +23,11 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 	worldTransform_.translation_ = position;
 	velocity_ = velocity;
 	worldTransform_.scale_ = {3, 3, 3};
+	radius_ = 30;
 }
-
 
 // メンバ関数ポインタのテーブル
 void (Enemy::*Enemy::spFuncTable[])() = {&Enemy::ApproachAction, &Enemy::LeaveAction};
-
 
 void Enemy::Update() {
 	//
@@ -41,9 +40,13 @@ void Enemy::Update() {
 		}
 		return false;
 	});
-
-	Fire();
-
+	// 発射間隔
+	fireTimer_--;
+	if (fireTimer_ <= 0) {
+		Fire();
+		// インターバルの値に戻す
+		fireTimer_ = kfireInterval;
+	}
 	for (EnemyBullet* bullet : bullets_) {
 		bullet->Update();
 	}
@@ -55,15 +58,13 @@ void Enemy::Update() {
 	worldTransform_.UpdateMatrix();
 }
 
-
-void Enemy::Draw( ViewProjection& viewProjection) {
+void Enemy::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 
 	for (EnemyBullet* bullet : bullets_) {
 		bullet->Draw(viewProjection);
 	}
 }
-
 
 void Enemy::ApproachAction() {
 
@@ -79,49 +80,44 @@ void Enemy::ApproachAction() {
 	}
 }
 
-
 void Enemy::LeaveAction() {
 	velocity_ = {0.5f, 0.5f, -0.5f};
 	// 座標を移動させる(１フレーム分の移動量を足しこむ)
 	worldTransform_.translation_ += velocity_;
 }
 
-
 void Enemy::Fire() {
-	//発射間隔
-	fireTimer_--;
 
-	if (fireTimer_ <= 0) {
-		//プレイヤーが存在しなければエラー
-		assert(player_);
-		// 弾丸の速度
-		const float kBulletSpeed = -1.0f;
-		//Vector3 velocity(0, 0, kBulletSpeed);
-		//// 速度ベクトルを敵の向きに合わせて回転させる
-		//velocity = TransforNormal(velocity, worldTransform_.matWorld_);
+	// プレイヤーが存在しなければエラー
+	assert(player_);
+	// 弾丸の速度
+	const float kBulletSpeed = -1.0f;
+	// Vector3 velocity(0, 0, kBulletSpeed);
+	//// 速度ベクトルを敵の向きに合わせて回転させる
+	// velocity = TransforNormal(velocity, worldTransform_.matWorld_);
 
-		//自キャラのワールド座標を取得する
-		Vector3 playerPos_ = player_->GetWorldPosition();
-		//敵キャラのワールド座標を取得する
-		Vector3 enemyPos_ = GetWorldPosition();
-		//敵キャラ→自キャラの差分ベクトルを音求める
-		Vector3 subtractV =Vector3Subtract(enemyPos_,playerPos_);
-		//ベクトルの正規化
-		Vector3 subtractVNotmalize = Vector3Normalize(subtractV);
-		//ベクトルの長さを速さに合わせる
-		Vector3 velocity = Vector3Multiply(kBulletSpeed, subtractVNotmalize);
+	// 自キャラのワールド座標を取得する
+	Vector3 playerPos_ = player_->GetWorldPosition();
+	// 敵キャラのワールド座標を取得する
+	Vector3 enemyPos_ = GetWorldPosition();
+	// 敵キャラ→自キャラの差分ベクトルを音求める
+	Vector3 subtractV = Vector3Subtract(enemyPos_, playerPos_);
+	// ベクトルの正規化
+	Vector3 subtractVNotmalize = Vector3Normalize(subtractV);
+	// ベクトルの長さを速さに合わせる
+	Vector3 velocity = Vector3Multiply(kBulletSpeed, subtractVNotmalize);
 
-		// 弾丸を生成・初期化する
-		EnemyBullet* newBullet = new EnemyBullet();
-		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
-		// 弾丸を登録する
-		bullets_.push_back(newBullet);
-		
-		//インターバルの値に戻す
-		fireTimer_ = kfireInterval;
-	}
+	// 弾丸を生成・初期化する
+	EnemyBullet* newBullet = new EnemyBullet();
+	newBullet->Initialize(model_, worldTransform_.translation_, velocity);
+	// 弾丸を登録する
+	bullets_.push_back(newBullet);
 }
 
+
+void Enemy::OnCollision() {
+	// 何もしない
+}
 
 Vector3 Enemy::GetWorldPosition() {
 	// ワールド座標を入れる変数

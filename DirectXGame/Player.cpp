@@ -22,6 +22,8 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 
 	// シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
+
+	radius_ = 10.0f;
 }
 
 void Player::Update() {
@@ -144,6 +146,10 @@ void Player::Attack() {
 		// 弾丸を登録する
 		bullets_.push_back(newBullet);
 	}
+}
+
+void Player::OnCollision() {
+	//何もしない
 }
 
 Vector3 Player::GetWorldPosition() {

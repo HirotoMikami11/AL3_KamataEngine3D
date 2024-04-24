@@ -32,6 +32,9 @@ private:
 	/// 弾丸
 	std::list<PlayerBullet*> bullets_;
 
+	//半径
+	float radius_;
+	
 public:
 	/// <summary>
 	/// デストラクタ
@@ -61,8 +64,17 @@ public:
 	/// </summary>
 	void Rotate();
 
+	/// <summary>
+	/// 衝突を検出したら呼び出されるコールバック関数
+	/// </summary>
+	void OnCollision();
 
-	///getter
+
+	///**----------------------------------------------------------------------------------------------*//
+	///
+	///		getter,setter
+	/// 
+	///**----------------------------------------------------------------------------------------------*//
 	
 	
 	/// <summary>
@@ -70,9 +82,12 @@ public:
 	/// </summary>
 	Vector3 GetWorldPosition();
 
+	/// <summary>
+	/// 弾丸リストを取得
+	/// </summary>
+	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
 
-
-
+	float GetRadius() { return radius_; };
 
 
 };

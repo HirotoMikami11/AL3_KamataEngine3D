@@ -16,6 +16,7 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vecto
 	worldTransform_.translation_ = position;
 	//　引数で受け取った速度をメンバ変数に代入
 	velocity_ = velocity;
+	radius_ = 10;
 }
 
 void PlayerBullet::Update() { 
@@ -34,4 +35,19 @@ void PlayerBullet::Update() {
 void PlayerBullet::Draw(const ViewProjection& viewProjection) {
 	// 3Dモデルを描画
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+}
+
+
+void PlayerBullet::OnCollision() { isDead_ = true; }
+
+Vector3 PlayerBullet::GetWorldPosition() {
+	// ワールド座標を入れる変数
+	Vector3 worldPos;
+
+	// ワールド行列の平行移動成分を取得
+	worldPos.x = worldTransform_.translation_.x;
+	worldPos.y = worldTransform_.translation_.y;
+	worldPos.z = worldTransform_.translation_.z;
+
+	return worldPos;
 }

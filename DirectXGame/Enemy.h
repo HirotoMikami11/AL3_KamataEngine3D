@@ -40,6 +40,7 @@ private:
 	// フェーズ
 	Phase phase_ = Phase::Approach;
 
+	float radius_;
 	/*-----------------------------------------------------------------------*/
 	//								弾丸関係の変数
 	/*-----------------------------------------------------------------------*/
@@ -92,9 +93,19 @@ public:
 	/// </summary>
 	void LeaveAction();
 
+	/// <summary>
+	/// 衝突を検出したら呼び出されるコールバック関数
+	/// </summary>
+	void OnCollision();
 
 	//setter
 	void SetPlayer(Player* player) { player_ = player; }
 	//gettrer
 	Vector3 GetWorldPosition();
+
+	float GetRadius() { return radius_; };
+	/// <summary>
+	/// 弾丸リストを取得
+	/// </summary>
+	const std::list<EnemyBullet*>& GetBullets() const { return bullets_; }
 };

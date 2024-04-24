@@ -17,6 +17,7 @@ private:
 
 	int32_t deathTimer_ = kLifeTime;
 	bool isDead_= false;
+	float radius_;
 
 public:
 
@@ -39,6 +40,16 @@ public:
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	void Draw(const ViewProjection& viewProjection);
 
+	/// <summary>
+	/// 衝突を検出したら呼び出されるコールバック関数
+	/// </summary>
+	void OnCollision();
 	// getter
 	bool IsDead() const { return isDead_; };
+	/// <summary>
+	/// ワールド座標を取得
+	/// </summary>
+	Vector3 GetWorldPosition();
+
+	float GetRadius() { return radius_; };
 };
