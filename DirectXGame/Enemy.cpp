@@ -69,7 +69,7 @@ void Enemy::Draw(ViewProjection& viewProjection) {
 void Enemy::ApproachAction() {
 
 	// approachの速度に変更
-	velocity_ = {0, 0, -0.0f};
+	velocity_ = {0, 0, -0.5f};
 
 	// 座標を移動させる(１フレーム分の移動量を足しこむ)
 	worldTransform_.translation_ += velocity_;
