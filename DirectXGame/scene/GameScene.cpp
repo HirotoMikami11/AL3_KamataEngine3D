@@ -32,7 +32,7 @@ void GameScene::Initialize() {
 
 	// 敵の初期化
 	enemy_ = new Enemy();
-	enemy_->Initialize(model_, {0, 10, 300}, {0, 0, -1});
+	enemy_->Initialize(model_, {0, 10, 51}, {0, 0, -1});
 	// 敵に自キャラのアドレスを渡し、GameSceneがenemy_にplayer_を貸し出す
 	enemy_->SetPlayer(player_);
 
@@ -156,7 +156,7 @@ void GameScene::CheakAllCollision() {
 		float AtoBDistance = Vector3Distance(posA, posB);
 		
 		//衝突していたら~~
-		if (AtoBDistance <= (player_->GetRadius() + bullet->GetRadius())) {
+		if (AtoBDistance <= powf((player_->GetRadius() + bullet->GetRadius()),2)) {
 		
 			// 自機の衝突時コールバックを呼び出す
 			player_->OnCollision();
@@ -178,7 +178,7 @@ void GameScene::CheakAllCollision() {
 		// 敵と自機弾丸の距離
 		float AtoBDistance = Vector3Distance(posA, posB);
 		// 衝突していたら~~
-		if (AtoBDistance <= (enemy_->GetRadius() + bullet->GetRadius())) {
+		if (AtoBDistance <= powf((enemy_->GetRadius() + bullet->GetRadius()),2)) {
 
 			// 敵の衝突時コールバックを呼び出す
 			enemy_->OnCollision();
@@ -201,7 +201,7 @@ void GameScene::CheakAllCollision() {
 			// 自機弾丸と敵弾丸の距離
 			float AtoBDistance = Vector3Distance(posA, posB);
 			// 衝突していたら~~
-			if (AtoBDistance <= (PBullet->GetRadius() + EBullet->GetRadius())) {
+			if (AtoBDistance <= powf((PBullet->GetRadius() + EBullet->GetRadius()),2)) {
 
 				// 自機弾丸の衝突時コールバックを呼び出す
 				PBullet->OnCollision();

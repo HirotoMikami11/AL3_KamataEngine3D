@@ -23,7 +23,7 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	// シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
 
-	radius_ = 5;
+	radius_ = 1;
 }
 
 void Player::Update() {

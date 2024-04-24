@@ -23,7 +23,7 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 	worldTransform_.translation_ = position;
 	velocity_ = velocity;
 	worldTransform_.scale_ = {3, 3, 3};
-	radius_ = 15;
+	radius_ = 3;
 }
 
 // メンバ関数ポインタのテーブル
@@ -69,7 +69,7 @@ void Enemy::Draw(ViewProjection& viewProjection) {
 void Enemy::ApproachAction() {
 
 	// approachの速度に変更
-	velocity_ = {0, 0, -0.5f};
+	velocity_ = {0, 0, -0.0f};
 
 	// 座標を移動させる(１フレーム分の移動量を足しこむ)
 	worldTransform_.translation_ += velocity_;
