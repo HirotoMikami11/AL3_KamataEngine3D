@@ -3,8 +3,9 @@
 #include "WorldTransform.h"
 #include <TextureManager.h>
 #include <MyMath.h>
+#include <Collider.h>
 
-class EnemyBullet {
+class EnemyBullet :Collider{
 private:
 
 	Model* model_;
@@ -43,13 +44,13 @@ public:
 	/// <summary>
 	/// 衝突を検出したら呼び出されるコールバック関数
 	/// </summary>
-	void OnCollision();
+	void OnCollision() override;
 	// getter
 	bool IsDead() const { return isDead_; };
 	/// <summary>
 	/// ワールド座標を取得
 	/// </summary>
-	Vector3 GetWorldPosition();
+	Vector3 GetWorldPosition() override;
 
 	float GetRadius() { return radius_; };
 };

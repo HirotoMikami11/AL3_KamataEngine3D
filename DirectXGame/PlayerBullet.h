@@ -3,11 +3,12 @@
 #include "WorldTransform.h"
 #include <TextureManager.h>
 #include <MyMath.h>
+#include <Collider.h>
 
 /// <summary>
 /// 自キャラの弾丸
 /// </summary>
-class PlayerBullet {
+class PlayerBullet :Collider{
 private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
@@ -50,14 +51,14 @@ public:
 	/// <summary>
 	/// 衝突を検出したら呼び出されるコールバック関数
 	/// </summary>
-	void OnCollision();
+	void OnCollision() override;
 
 
 	//getter
 	/// <summary>
 	/// ワールド座標を取得
 	/// </summary>
-	Vector3 GetWorldPosition();
+	Vector3 GetWorldPosition() override;
 	float GetRadius() { return radius_; };
 	bool IsDead() const { return isDead_; };
 };

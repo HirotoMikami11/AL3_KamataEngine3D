@@ -7,12 +7,13 @@
 #include <ImGuiManager.h>
 #include <MyMath.h>
 #include <list>
+#include<Collider.h>
 
 /// <summary>
 /// 自キャラ
 /// </summary>
 
-class Player {
+class Player :public Collider{
 private:
 	/// <summary>
 	/// 弾丸を発射
@@ -67,7 +68,7 @@ public:
 	/// <summary>
 	/// 衝突を検出したら呼び出されるコールバック関数
 	/// </summary>
-	void OnCollision();
+	void OnCollision() override;
 
 
 	///**----------------------------------------------------------------------------------------------*//
@@ -80,14 +81,14 @@ public:
 	/// <summary>
 	/// ワールド座標を取得
 	/// </summary>
-	Vector3 GetWorldPosition();
+	Vector3 GetWorldPosition() override;
 
 	/// <summary>
 	/// 弾丸リストを取得
 	/// </summary>
 	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
 
-	float GetRadius() { return radius_; };
+	float GetRadius() { return radius_; } ;
 
 
 };

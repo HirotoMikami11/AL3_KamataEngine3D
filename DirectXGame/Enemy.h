@@ -16,7 +16,7 @@ class Player;
 /// <summary>
 /// 敵
 /// </summary>
-class Enemy {
+class Enemy : Collider{
 private:
 	/// <summary>
 	/// フェーズ
@@ -96,12 +96,12 @@ public:
 	/// <summary>
 	/// 衝突を検出したら呼び出されるコールバック関数
 	/// </summary>
-	void OnCollision();
+	void OnCollision() override;
 
 	//setter
 	void SetPlayer(Player* player) { player_ = player; }
 	//gettrer
-	Vector3 GetWorldPosition();
+	Vector3 GetWorldPosition() override;
 
 	float GetRadius() { return radius_; };
 	/// <summary>

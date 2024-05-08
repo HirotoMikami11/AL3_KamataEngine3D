@@ -146,24 +146,10 @@ void GameScene::CheakAllCollision() {
 
 #pragma region "自機と敵弾丸の当たり判定"
 
-	// 自機の座標.
-	posA = player_->GetWorldPosition();
+
 	// 自機と敵弾丸全ての当たり判定
 	for (EnemyBullet* bullet : enemyBullets) {
-		// 敵弾丸の座標
-		posB = bullet->GetWorldPosition();
-		//自機と敵弾丸の距離
-		float AtoBDistance = Vector3Distance(posA, posB);
-		
-		//衝突していたら~~
-		if (AtoBDistance <= powf((player_->GetRadius() + bullet->GetRadius()),2)) {
-		
-			// 自機の衝突時コールバックを呼び出す
-			player_->OnCollision();
-			// 自機の衝突時コールバックを呼び出す
-			bullet->OnCollision();
-
-		}
+		CheckCollisionPair(player_, bullet);
 	}
 
 #pragma endregion
@@ -211,4 +197,24 @@ void GameScene::CheakAllCollision() {
 		}
 	}
 #pragma endregion
+}
+
+
+void GameScene::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
+	// 両方のワールド座標を取得
+	Vector3 posA = colliderA->GetWorldPosition();
+	float radiusA_ = colliderA->GetRadius();
+	Vector3 posB = colliderB->GetWorldPosition();
+	float radiusB_ = colliderA->GetRadius();
+
+	float AtoBDistance = Vector3Distance(posA, posB);
+	// 球と球の当たり判定
+	//  衝突していたら~~
+	if (AtoBDistance <= powf((radiusA_ + radiusB_), 2)) {
+
+		// 自機の衝突時コールバックを呼び出す
+		colliderA->OnCollision();
+		// 自機の衝突時コールバックを呼び出す
+		colliderB->OnCollision();
+	}
 }
