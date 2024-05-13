@@ -1,25 +1,36 @@
 #pragma once
 #include "Model.h"
 #include "WorldTransform.h"
-#include <TextureManager.h>
 #include <MyMath.h>
+#include <TextureManager.h>
+
+// 自機クラスの前方宣言
+// インクルードせずにプレイヤークラスのポインタを持つことができる
+class Player;
 
 class EnemyBullet {
 private:
-
 	Model* model_;
 	WorldTransform worldTransform_;
 	Vector3 velocity_;
 	uint32_t textureHandle_;
 
+	/// 自キャラ
+	Player* player_ = nullptr;
+
 	// 寿命
 	static const int32_t kLifeTime = 60 * 5;
-
 	int32_t deathTimer_ = kLifeTime;
-	bool isDead_= false;
+	bool isDead_ = false;
+
+	// ホーミング
+	//  横軸方向の長さを求める
+	float velocityXZLen_;
+	// 敵弾丸から自キャラへのベクトルを計算
+	Vector3 toPlayer_;
+	float t_;
 
 public:
-
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -39,6 +50,11 @@ public:
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	void Draw(const ViewProjection& viewProjection);
 
+	// setter
+	void SetPlayer(Player* player) { player_ = player; }
+
 	// getter
 	bool IsDead() const { return isDead_; };
+
+	Vector3 GetWorldPosition();
 };

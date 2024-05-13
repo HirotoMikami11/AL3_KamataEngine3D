@@ -342,11 +342,28 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 //
 /*-----------------------------------------------------------------------*/
 
-float Vector2Length(const float x, const float y) {
+float Vector2Length(const float& x, const float& y) {
 	float result = sqrtf(x * x + y * y);
 	return result;
 }
-	/*-----------------------------------------------------------------------*/
+
+float clamp(float& x, float max) {
+
+	if (x < max) {
+		return x;
+	} else {
+		return max;
+	}
+}
+// 線形補間関数
+float Lerp(const float& a, const float& b, float t) {
+
+	float result = t * a + (1.0f - t) * b;
+
+	return result;
+}
+
+/*-----------------------------------------------------------------------*/
 //
 //								3次元ベクトル
 //
@@ -391,23 +408,61 @@ Vector3 Vector3Normalize(const Vector3& v) {
 
 // ベクトル変換
 // 平行移動を無視してスケーリングと回転のみを適用する
-Vector3 TransforNormal(const Vector3& v, const Matrix4x4& m) { 
-	Vector3 result{
-		v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0],
-		v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1],
-		v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2]
-	};
+Vector3 TransforNormal(const Vector3& v, const Matrix4x4& m) {
+	Vector3 result{v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0], v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1], v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2]};
 	return result;
 }
 
+// 球面線形補間(Slerp)
+// 正規化も行う
+Vector3 MySlerp(const Vector3& v1, const Vector3& v2, float t) {
 
+	Vector3 result;
+	Vector3 v1Normalize = Vector3Normalize(v1);
+	Vector3 v2Normalize = Vector3Normalize(v2);
+	// 内積を求める
+	float dot = Vector3Dot(v1Normalize, v2Normalize);
+	// 誤差により1.0fを超えるのを防ぐ
+	dot = clamp(dot, 1.0f);
+	// アークコサインでθの角度を求める
+	float theta = std::acos(dot);
+	// θの角度からsinθを求める
+	float sinTheta = std::sin(theta);
+	// サイン（θ(1-t)）を求める
+	float sinThetaFrom = std::sin((1 - t) * theta);
+	// サイン（θt）を求める
+	float sinThetaTo = std::sin(t * theta);
+	// 球面線形補間した単位ベクトル
+	Vector3 SlerpVector;
+	// ゼロ除算を防ぐ
+	if (sinTheta < 1.0e-5) {
+		SlerpVector = v1Normalize;
+	}else{
+		Vector3 a = Vector3Multiply(sinThetaFrom / sinTheta, v1Normalize);
+		Vector3 b = Vector3Multiply(sinThetaTo / sinTheta, v2Normalize);
+		SlerpVector = Vector3Add(a, b);
+	}
+	//ベクトルの長さはv1v2の長さを線形補間
+	float lengthv1=Vector3Length(v1);
+	float lengthv2=Vector3Length(v2);
+	//補間ベクトルの長さを求める
+	float length = Lerp(lengthv1, lengthv2,t );
+	//長さを反映
+	result = Vector3Multiply(length, SlerpVector);
+	return result;
 
+	///*											*///
+	///*	v1とv2が真逆の向きの時v1を返すことになる		*///
+	///*											*///
+
+	//解決方法
+
+}
 
 Vector3& operator+=(Vector3& v1, Vector3& v2) {
 	v1 = Vector3Add(v1, v2);
 	return v1;
 };
-
 
 Vector3& operator-=(Vector3& v1, Vector3& v2) {
 	v1 = Vector3Subtract(v1, v2);

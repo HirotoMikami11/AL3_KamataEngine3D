@@ -57,7 +57,10 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 //
 /*-----------------------------------------------------------------------*/
 
-float Vector2Length(const float x, const float y);
+float Vector2Length(const float& x, const float& y);
+
+float clamp(float& x,float max);
+
 /*-----------------------------------------------------------------------*/
 //
 //								3次元ベクトル
@@ -82,7 +85,8 @@ Vector3 Vector3Normalize(const Vector3& v);
 //ベクトル変換
 Vector3 TransforNormal(const Vector3& v,const Matrix4x4& m);
 
-
+//球面線形補間(Slerp)
+Vector3 MySlerp(const Vector3&v1,const Vector3&v2,float t);
 
 //
 ///	演算の死のオーバーロード
@@ -93,6 +97,4 @@ Vector3& operator+=(Vector3& v1,Vector3&v2);
 
 //減算
 Vector3& operator-=(Vector3& v1, Vector3& v2);
-
-
 

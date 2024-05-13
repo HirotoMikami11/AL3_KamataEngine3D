@@ -36,6 +36,7 @@ void GameScene::Initialize() {
 	enemy_->Initialize(model_, {0, 10, 300}, {0,0,-1});
 	//敵に自キャラのアドレスを渡し、GameSceneがenemy_にplayer_を貸し出す
 	enemy_->SetPlayer(player_);
+	
 
 
 
