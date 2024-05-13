@@ -336,8 +336,17 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 
 	return AffineMatrix;
 };
-
 /*-----------------------------------------------------------------------*/
+//
+//								2次元ベクトル
+//
+/*-----------------------------------------------------------------------*/
+
+float Vector2Length(const float x, const float y) {
+	float result = sqrtf(x * x + y * y);
+	return result;
+}
+	/*-----------------------------------------------------------------------*/
 //
 //								3次元ベクトル
 //

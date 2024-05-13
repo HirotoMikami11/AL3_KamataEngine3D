@@ -51,7 +51,13 @@ Matrix4x4 MakeRotateZMatrix(float radian);
 
 // アフィン変換行列
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
+/*-----------------------------------------------------------------------*/
+//
+//								2次元ベクトル
+//
+/*-----------------------------------------------------------------------*/
 
+float Vector2Length(const float x, const float y);
 /*-----------------------------------------------------------------------*/
 //
 //								3次元ベクトル
