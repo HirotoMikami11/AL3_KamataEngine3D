@@ -355,6 +355,16 @@ float clamp(float& x, float max) {
 		return max;
 	}
 }
+float clamp(float& x, float min, float max) {
+	if (x < min) {
+		return min;
+	} else if (x > max) {
+		return max;
+	} else {
+		return x;
+	}
+}
+
 // 線形補間関数
 float Lerp(const float& a, const float& b, float t) {
 
@@ -405,6 +415,16 @@ Vector3 Vector3Normalize(const Vector3& v) {
 
 	return result;
 }
+Vector3 Vector3Lerp(const Vector3& a, const Vector3& b, float t) {
+	// tが0から1の間に収まるように制限する
+	t = clamp(t, 0.0f, 1.0f);
+	// ベクトルの線形補間を計算する
+	Vector3 result;
+	result.x = a.x + (b.x - a.x) * t;
+	result.y = a.y + (b.y - a.y) * t;
+	result.z = a.z + (b.z - a.z) * t;
+	return result;
+}
 
 // ベクトル変換
 // 平行移動を無視してスケーリングと回転のみを適用する
@@ -423,7 +443,7 @@ Vector3 MySlerp(const Vector3& v1, const Vector3& v2, float t) {
 	// 内積を求める
 	float dot = Vector3Dot(v1Normalize, v2Normalize);
 	// 誤差により1.0fを超えるのを防ぐ
-	dot = clamp(dot, 1.0f);
+	dot = clamp(dot, 0.0f,1.0f);
 	// アークコサインでθの角度を求める
 	float theta = std::acos(dot);
 	// θの角度からsinθを求める
@@ -437,17 +457,26 @@ Vector3 MySlerp(const Vector3& v1, const Vector3& v2, float t) {
 	// ゼロ除算を防ぐ
 	if (sinTheta < 1.0e-5) {
 		SlerpVector = v1Normalize;
-	}else{
+	} else {
 		Vector3 a = Vector3Multiply(sinThetaFrom / sinTheta, v1Normalize);
 		Vector3 b = Vector3Multiply(sinThetaTo / sinTheta, v2Normalize);
 		SlerpVector = Vector3Add(a, b);
 	}
-	//ベクトルの長さはv1v2の長さを線形補間
-	float lengthv1=Vector3Length(v1);
-	float lengthv2=Vector3Length(v2);
-	//補間ベクトルの長さを求める
-	float length = Lerp(lengthv1, lengthv2,t );
-	//長さを反映
+
+	// 真逆の場合の滑らかな遷移
+	if (dot < 0.0f) {
+		// 一時的なベクトルを定義、v1とv2の中間点に位置
+		Vector3 middle = Vector3Normalize(Vector3Add(v1, v2));
+		// 滑らかな遷移をするために、中間点に対する補間をすｒ
+		SlerpVector = Vector3Normalize(Vector3Lerp(SlerpVector, middle, 1.0f - t));
+	}
+
+	// ベクトルの長さはv1v2の長さを線形補間
+	float lengthv1 = Vector3Length(v1);
+	float lengthv2 = Vector3Length(v2);
+	// 補間ベクトルの長さを求める
+	float length = Lerp(lengthv1, lengthv2, t);
+	// 長さを反映
 	result = Vector3Multiply(length, SlerpVector);
 	return result;
 
@@ -455,8 +484,7 @@ Vector3 MySlerp(const Vector3& v1, const Vector3& v2, float t) {
 	///*	v1とv2が真逆の向きの時v1を返すことになる		*///
 	///*											*///
 
-	//解決方法
-
+	// 解決方法
 }
 
 Vector3& operator+=(Vector3& v1, Vector3& v2) {
