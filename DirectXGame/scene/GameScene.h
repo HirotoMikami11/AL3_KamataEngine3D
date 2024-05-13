@@ -11,6 +11,7 @@
 
 #include <Player.h>
 #include <Enemy.h>
+#include <SkyDome.h>
 
 /// <summary>
 /// ゲームシーン
@@ -55,12 +56,15 @@ private: // メンバ変数
 
 	Player* player_ = nullptr;
 	Enemy* enemy_ = nullptr;
+	SkyDome* skydome_ = nullptr;
 
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0;
 
 	//3Dモデルデータ
 	Model* model_ = nullptr;
+	Model* modelSkydome_ = nullptr;
+
 	//ビュープロジェクション
 	ViewProjection viewProjection_;
 

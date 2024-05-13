@@ -64,6 +64,9 @@
     <Filter Include="ヘッダー ファイル\scene\Player">
       <UniqueIdentifier>{7bdaeb5c-e741-4c5f-91cc-31bf6fc7b261}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\scene\SkyDome">
+      <UniqueIdentifier>{587b3666-ae0e-42e4-968f-d34744eace75}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -98,6 +101,9 @@
     </ClCompile>
     <ClCompile Include="EnemyBullet.cpp">
       <Filter>ソース ファイル\scene\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyDome.cpp">
+      <Filter>ソース ファイル\scene\SkyDome</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -202,6 +208,9 @@
     </ClInclude>
     <ClInclude Include="EnemyBullet.h">
       <Filter>ヘッダー ファイル\scene\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyDome.h">
+      <Filter>ヘッダー ファイル\scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

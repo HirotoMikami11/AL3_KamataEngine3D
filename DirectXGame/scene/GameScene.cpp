@@ -5,12 +5,13 @@
 
 GameScene::GameScene() {}
 
-
 GameScene::~GameScene() {
 	delete model_;
+	delete modelSkydome_;
 	delete player_;
 	delete debugCamera_;
 	delete enemy_;
+	delete skydome_;
 }
 
 void GameScene::Initialize() {
@@ -23,6 +24,8 @@ void GameScene::Initialize() {
 	textureHandle_ = TextureManager::Load("uvChecker.png");
 	// 3Dモデルの生成
 	model_ = Model::Create();
+	modelSkydome_ = Model::CreateFromOBJ("skyDome", true);
+
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
@@ -33,9 +36,13 @@ void GameScene::Initialize() {
 
 	// 敵の初期化
 	enemy_ = new Enemy();
-	enemy_->Initialize(model_, {0, 10, 300}, {0, 0, -1});
+	enemy_->Initialize(model_, {0, 10, 200}, {0, 0, -1});
 	// 敵に自キャラのアドレスを渡し、GameSceneがenemy_にplayer_を貸し出す
 	enemy_->SetPlayer(player_);
+
+	// 天球の生成・初期化
+	skydome_ = new SkyDome();
+	skydome_->Initialize(modelSkydome_);
 
 	// デバッグカメラの生成(引数は画面の横幅、縦幅)
 	debugCamera_ = new DebugCamera(WinApp::kWindowWidth, WinApp::kWindowHeight);
@@ -113,6 +120,9 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
+	// 天球
+	skydome_->Draw(viewProjection_);
+
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
 	if (enemy_ != nullptr) {
@@ -153,17 +163,16 @@ void GameScene::CheakAllCollision() {
 	for (EnemyBullet* bullet : enemyBullets) {
 		// 敵弾丸の座標
 		posB = bullet->GetWorldPosition();
-		//自機と敵弾丸の距離
+		// 自機と敵弾丸の距離
 		float AtoBDistance = Vector3Distance(posA, posB);
-		
-		//衝突していたら~~
-		if (AtoBDistance <= powf((player_->GetRadius() + bullet->GetRadius()),2)) {
-		
+
+		// 衝突していたら~~
+		if (AtoBDistance <= powf((player_->GetRadius() + bullet->GetRadius()), 2)) {
+
 			// 自機の衝突時コールバックを呼び出す
 			player_->OnCollision();
 			// 自機の衝突時コールバックを呼び出す
 			bullet->OnCollision();
-
 		}
 	}
 
@@ -171,22 +180,21 @@ void GameScene::CheakAllCollision() {
 
 #pragma region "自機弾丸と敵の当たり判定"
 
-	//敵の座標
+	// 敵の座標
 	posB = enemy_->GetWorldPosition();
 	for (PlayerBullet* bullet : playerBullets) {
-		//自機弾丸の座標
+		// 自機弾丸の座標
 		posA = bullet->GetWorldPosition();
 		// 敵と自機弾丸の距離
 		float AtoBDistance = Vector3Distance(posA, posB);
 		// 衝突していたら~~
-		if (AtoBDistance <= powf((enemy_->GetRadius() + bullet->GetRadius()),2)) {
+		if (AtoBDistance <= powf((enemy_->GetRadius() + bullet->GetRadius()), 2)) {
 
 			// 敵の衝突時コールバックを呼び出す
 			enemy_->OnCollision();
 			// 自機弾丸の衝突時コールバックを呼び出す
 			bullet->OnCollision();
 		}
-
 	}
 #pragma endregion
 
@@ -194,7 +202,7 @@ void GameScene::CheakAllCollision() {
 	// 敵の座標
 
 	for (PlayerBullet* PBullet : playerBullets) {
-		//自機弾丸の座標
+		// 自機弾丸の座標
 		posA = PBullet->GetWorldPosition();
 		for (EnemyBullet* EBullet : enemyBullets) {
 			// 敵弾丸の座標
@@ -202,7 +210,7 @@ void GameScene::CheakAllCollision() {
 			// 自機弾丸と敵弾丸の距離
 			float AtoBDistance = Vector3Distance(posA, posB);
 			// 衝突していたら~~
-			if (AtoBDistance <= powf((PBullet->GetRadius() + EBullet->GetRadius()),2)) {
+			if (AtoBDistance <= powf((PBullet->GetRadius() + EBullet->GetRadius()), 2)) {
 
 				// 自機弾丸の衝突時コールバックを呼び出す
 				PBullet->OnCollision();
