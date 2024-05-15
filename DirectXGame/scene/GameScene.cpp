@@ -44,7 +44,7 @@ void GameScene::Initialize() {
 
 	// 自キャラの生成
 	player_ = new Player();
-	Vector3 playerPos(0,0,railCamera_->GetPositionZ()+50);
+	Vector3 playerPos(0,0,railCamera_->GetPositionZ()+70);
 	// 自キャラの初期化
 	player_->Initialize(model_, textureHandle_,playerPos);
 
