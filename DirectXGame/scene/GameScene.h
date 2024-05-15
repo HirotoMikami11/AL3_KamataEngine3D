@@ -44,9 +44,9 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
-/// <summary>
-/// 衝突判定と応答
-/// </summary>
+	/// <summary>
+	/// 衝突判定と応答
+	/// </summary>
 	void CheakAllCollision();
 
 private: // メンバ変数

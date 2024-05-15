@@ -69,7 +69,7 @@ void Player::Update() {
 	}
 
 	// 座標移動（ベクトルの加算）
-	worldTransform_.translation_ = Vector3Add(worldTransform_.translation_, move);
+	worldTransform_.translation_ +=  move;
 
 	// 移動限界座標
 	const float kMoveLimitX = 32.0f;
