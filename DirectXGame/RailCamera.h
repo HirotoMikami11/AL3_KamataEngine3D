@@ -1,7 +1,8 @@
 #pragma once
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-
+#include <MyMath.h>
+#include <ImGuiManager.h>
 /// <summary>
 /// レールカメラ
 /// </summary>
@@ -28,4 +29,20 @@ public:
 	/// デバッグ時のみ表示してみる
 	/// </summary>
 	void DebugDraw();
+
+
+
+	/// <summary>
+	/// ビュープロジェクション行列を取得する
+	/// </summary>
+	/// <returns>ビュープロジェクション</returns>
+	const ViewProjection& GetViewProjection() { return viewProjection_; };
+	/// <summary>
+	/// ワールドトランスフォーム行列を取得する
+	/// </summary>
+	/// <returns></returns>
+	const WorldTransform& GetWorldTrasnform() { return worldTransform_; };
+
+	const float& GetPositionZ() { return worldTransform_.translation_.z; };
+
 };

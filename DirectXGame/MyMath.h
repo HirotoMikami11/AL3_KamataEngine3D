@@ -2,6 +2,7 @@
 #include "cassert"
 #include <Matrix4x4.h>
 #include <Vector3.h>
+#define _USE_MATH_DEFINES
 #include <cmath> //C++
 
 /*-----------------------------------------------------------------------*/
@@ -48,6 +49,21 @@ Matrix4x4 MakeRotateZMatrix(float radian);
 // アフィン変換行列
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
 
+//
+///	演算の死のオーバーロード
+//
+
+// 加算
+Matrix4x4& operator+=(Matrix4x4 m1, Matrix4x4& m2);
+
+// 減算
+Matrix4x4& operator-=(Matrix4x4 m1, Matrix4x4& m2);
+
+// 積
+Matrix4x4& operator*=(Matrix4x4 m1, Matrix4x4& m2);
+
+
+
 /*-----------------------------------------------------------------------*/
 //
 //								3次元ベクトル
@@ -72,7 +88,7 @@ Vector3 Vector3Normalize(const Vector3& v);
 // ベクトル変換
 Vector3 TransforNormal(const Vector3& v, const Matrix4x4& m);
 
-//3次元ベクトルの距離
+// 3次元ベクトルの距離
 float Vector3Distance(const Vector3 v1, const Vector3 v2);
 
 //

@@ -7,7 +7,7 @@ Player::~Player() {
 	}
 }
 
-void Player::Initialize(Model* model, uint32_t textureHandle) {
+void Player::Initialize(Model* model, uint32_t textureHandle, const Vector3& position) {
 	/// 1.nullptrチェック
 	assert(model);
 
@@ -22,6 +22,8 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 
 	// シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
+
+	worldTransform_.translation_ = position;
 
 	radius_ = 1;
 }
@@ -151,7 +153,10 @@ void Player::Attack() {
 void Player::OnCollision() {
 	//何もしない
 }
-
+void Player::SetParent(const WorldTransform* parent) {
+	//親子関係を結ぶ
+	worldTransform_.parent_ = parent;
+}
 Vector3 Player::GetWorldPosition() {
 	//ワールド座標を入れる変数
 	Vector3 worldPos;

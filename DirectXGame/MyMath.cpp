@@ -337,6 +337,24 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 	return AffineMatrix;
 };
 
+// 加算
+Matrix4x4& operator+=(Matrix4x4 m1, Matrix4x4& m2) {
+	m1 = Add(m1, m2);
+	return m1;
+}
+
+// 減算
+Matrix4x4& operator-=(Matrix4x4 m1, Matrix4x4& m2) {
+	m1 = Subtract(m1, m2);
+	return m1;
+}
+
+// 積
+Matrix4x4& operator*=(Matrix4x4 m1, Matrix4x4& m2) {
+	m1 = Multiply(m1, m2);
+	return m1;
+}
+
 /*-----------------------------------------------------------------------*/
 //
 //								3次元ベクトル
@@ -382,18 +400,13 @@ Vector3 Vector3Normalize(const Vector3& v) {
 
 // ベクトル変換
 // 平行移動を無視してスケーリングと回転のみを適用する
-Vector3 TransforNormal(const Vector3& v, const Matrix4x4& m) { 
-	Vector3 result{
-		v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0],
-		v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1],
-		v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2]
-	};
+Vector3 TransforNormal(const Vector3& v, const Matrix4x4& m) {
+	Vector3 result{v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0], v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1], v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2]};
 	return result;
 }
 
+float Vector3Distance(const Vector3 v1, const Vector3 v2) {
 
-float Vector3Distance(const Vector3 v1, const Vector3 v2) { 
-	
 	float result = powf({v2.x - v1.x}, 2) + powf({v2.y - v1.y}, 2) + powf({v2.z - v1.z}, 2);
 	return result;
 }
@@ -402,7 +415,6 @@ Vector3& operator+=(Vector3& v1, Vector3& v2) {
 	v1 = Vector3Add(v1, v2);
 	return v1;
 };
-
 
 Vector3& operator-=(Vector3& v1, Vector3& v2) {
 	v1 = Vector3Subtract(v1, v2);
