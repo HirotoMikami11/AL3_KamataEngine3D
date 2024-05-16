@@ -22,10 +22,15 @@ void RailCamera::Update() {
 	// 移動ベクトル
 	Vector3 move = {0, 0, 0};
 	// 回転ベクトル
-	Vector3 rotate = {0, 0, 0};
+	Vector3 rotate = {0, (1.0f/60.0f)*float(M_PI), 0};
 
 	worldTransform_.translation_ += move;
-	//worldTransform_.rotation_ += rotate;
+
+	worldTransform_.rotation_ += rotate;
+
+
+
+
 	worldTransform_.UpdateMatrix();
 	
 	//カメラオブジェクトのワールド行列からビュー行列を計算する
