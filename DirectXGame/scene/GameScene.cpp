@@ -34,19 +34,18 @@ void GameScene::Initialize() {
 
 	// レールカメラの生成
 	railCamera_ = new RailCamera();
-	railCamera_->Initialize({0, 0, 0}, {0, 0, 0});
+	railCamera_->Initialize({0, 0, -30}, {0, 0, 0});
 
 	// 軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
 	// 軸方向表示が参照するビュープロジェクションを指定する（アドレス渡し）
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 
-
 	// 自キャラの生成
 	player_ = new Player();
-	Vector3 playerPos(0,0,railCamera_->GetPositionZ()+70);
+	Vector3 playerPos(0, 0, railCamera_->GetPositionZ() + 50);
 	// 自キャラの初期化
-	player_->Initialize(model_, textureHandle_,playerPos);
+	player_->Initialize(model_, textureHandle_, playerPos);
 
 	// 敵の初期化
 	enemy_ = new Enemy();
@@ -58,11 +57,8 @@ void GameScene::Initialize() {
 	skydome_ = new SkyDome();
 	skydome_->Initialize(modelSkydome_);
 
-
-
-//自キャラとレールカメラの親子関係を結ぶ
+	// 自キャラとレールカメラの親子関係を結ぶ
 	player_->SetParent(&railCamera_->GetWorldTrasnform());
-
 }
 
 void GameScene::Update() {
@@ -105,7 +101,7 @@ void GameScene::Update() {
 		// ビュープロジェクション行列の転送
 		viewProjection_.TransferMatrix();
 		// ビュープロジェクション行列の更新と転送
-		//viewProjection_.UpdateMatrix();
+		// viewProjection_.UpdateMatrix();
 	}
 
 #endif

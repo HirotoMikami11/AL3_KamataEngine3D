@@ -106,6 +106,7 @@ void Player::Update() {
 
 	/// キャラクターの座標を画面表示する処理
 	ImGui::SliderFloat3("Player", &worldTransform_.translation_.x, -50.0f, 50.0f);
+	//ImGui::InputFloat3("Player");
 
 	ImGui::End();
 }
@@ -144,7 +145,7 @@ void Player::Attack() {
 
 		// 弾丸を生成・初期化する
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
+		newBullet->Initialize(model_, GetWorldPosition(), velocity);
 		// 弾丸を登録する
 		bullets_.push_back(newBullet);
 	}
@@ -165,6 +166,5 @@ Vector3 Player::GetWorldPosition() {
 	worldPos.x = worldTransform_.translation_.x;
 	worldPos.y = worldTransform_.translation_.y;
 	worldPos.z = worldTransform_.translation_.z;
-
 	return worldPos;
 }
