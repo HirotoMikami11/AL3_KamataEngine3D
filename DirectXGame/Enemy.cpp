@@ -95,7 +95,7 @@ void Enemy::Fire() {
 		//プレイヤーが存在しなければエラー
 		assert(player_);
 		// 弾丸の速度
-		const float kBulletSpeed = -1.0f;
+		const float kBulletSpeed = 1.0f;
 		//Vector3 velocity(0, 0, kBulletSpeed);
 		//// 速度ベクトルを敵の向きに合わせて回転させる
 		//velocity = TransforNormal(velocity, worldTransform_.matWorld_);
@@ -105,7 +105,7 @@ void Enemy::Fire() {
 		//敵キャラのワールド座標を取得する
 		Vector3 enemyPos_ = GetWorldPosition();
 		//敵キャラ→自キャラの差分ベクトルを音求める
-		Vector3 subtractV =Vector3Subtract(enemyPos_,playerPos_);
+		Vector3 subtractV =Vector3Subtract(playerPos_,enemyPos_);
 		//ベクトルの正規化
 		Vector3 subtractVNotmalize = Vector3Normalize(subtractV);
 		//ベクトルの長さを速さに合わせる
@@ -128,9 +128,9 @@ Vector3 Enemy::GetWorldPosition() {
 	Vector3 worldPos;
 
 	// ワールド行列の平行移動成分を取得
-	worldPos.x = worldTransform_.translation_.x;
-	worldPos.y = worldTransform_.translation_.y;
-	worldPos.z = worldTransform_.translation_.z;
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
 
 	return worldPos;
 }
