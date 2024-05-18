@@ -1,12 +1,10 @@
 #include "Enemy.h"
 
 // ヘッダ同士でインクルードしあっていないのでセーフ
-#include "Player.h"
 #include "GameScene.h"
+#include "Player.h"
 
-Enemy ::~Enemy() {
-
-}
+Enemy ::~Enemy() {}
 
 void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& velocity) {
 	// nullcheak
@@ -37,7 +35,6 @@ void Enemy::Update() {
 		fireTimer_ = kfireInterval;
 	}
 
-
 	/// フェーズによって行動を変化させる
 	(this->*spFuncTable[static_cast<size_t>(phase_)])();
 
@@ -45,9 +42,7 @@ void Enemy::Update() {
 	worldTransform_.UpdateMatrix();
 }
 
-void Enemy::Draw(ViewProjection& viewProjection) {
-	model_->Draw(worldTransform_, viewProjection, textureHandle_);
-}
+void Enemy::Draw(ViewProjection& viewProjection) { model_->Draw(worldTransform_, viewProjection, textureHandle_); }
 
 void Enemy::ApproachAction() {
 
@@ -96,9 +91,11 @@ void Enemy::Fire() {
 	gameScene_->AddEnemyBullet(newBullet);
 }
 
-
 void Enemy::OnCollision() {
 	// 何もしない
+	isDead_ = true;
+
+
 }
 
 Vector3 Enemy::GetWorldPosition() {

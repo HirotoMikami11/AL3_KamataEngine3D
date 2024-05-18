@@ -44,6 +44,10 @@ private:
 	Phase phase_ = Phase::Approach;
 
 	float radius_;
+
+
+	//ですフラグ
+	bool isDead_=false;
 	/*-----------------------------------------------------------------------*/
 	//								弾丸関係の変数
 	/*-----------------------------------------------------------------------*/
@@ -104,7 +108,8 @@ public:
 	//setter
 	void SetPlayer(Player* player) { player_ = player; }
 	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
-	//gettrer
+	// getter
+	bool IsDead() const { return isDead_; };
 	Vector3 GetWorldPosition();
 
 	float GetRadius() { return radius_; };

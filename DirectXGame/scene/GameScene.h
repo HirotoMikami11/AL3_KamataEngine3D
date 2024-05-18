@@ -24,7 +24,7 @@ private: // メンバ変数
 	Audio* audio_ = nullptr;
 
 	Player* player_ = nullptr;
-	Enemy* enemy_ = nullptr;
+	//Enemy* enemy_ = nullptr;
 	SkyDome* skydome_ = nullptr;
 
 	// テクスチャハンドル
@@ -46,6 +46,7 @@ private: // メンバ変数
 
 	//敵弾
 	std::list<EnemyBullet*> enemyBullets_;
+	std::list<Enemy*> enemies_;
 
 public: // メンバ関数
 	/// <summary>
@@ -83,4 +84,10 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="enemyBullet">敵弾</param>
 	void AddEnemyBullet(EnemyBullet* enemyBullet);
+
+	/// <summary>
+	/// 敵を追加する
+	/// </summary>
+	/// <param name="enemy">敵</param>
+	void AddEnemy(Enemy* enemy);
 };
