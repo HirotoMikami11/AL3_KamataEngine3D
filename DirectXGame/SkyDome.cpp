@@ -3,14 +3,12 @@
 /// 初期化
 /// </summary>
 void SkyDome::Initialize(Model* model) {
-	///03_11_p24から再開
-	//天球の初期化、更新、描画などを書く
+		///03_11_p24から再開
+		//天球の初期化、更新、描画などを書く
 		assert(model);
-
 		/// 2.データをメンバ変数に移し替える
 		// 3Dモデルデータ
 		model_ = model;
-
 		/// 3.ワールド変換の初期化
 		worldTransform_.Initialize();
 

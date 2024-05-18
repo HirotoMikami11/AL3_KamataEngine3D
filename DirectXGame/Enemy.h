@@ -12,6 +12,8 @@
 // 自機クラスの前方宣言
 // インクルードせずにプレイヤークラスのポインタを持つことができる
 class Player;
+//GameSceneの前方宣言
+class GameScene;
 
 /// <summary>
 /// 敵
@@ -28,7 +30,8 @@ private:
 
 	/// 自キャラ
 	Player* player_ = nullptr;
-
+	///　ゲームシーン
+	GameScene* gameScene_ = nullptr;
 	// ワールド変換データ
 	WorldTransform worldTransform_;
 	// モデル
@@ -45,7 +48,7 @@ private:
 	//								弾丸関係の変数
 	/*-----------------------------------------------------------------------*/
 
-	std::list<EnemyBullet*> bullets_;
+	//std::list<EnemyBullet*> bullets_;
 	// 発射までのインターバル
 	static const int kfireInterval = 60;
 	// 発射するタイマー
@@ -100,12 +103,10 @@ public:
 
 	//setter
 	void SetPlayer(Player* player) { player_ = player; }
+	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 	//gettrer
 	Vector3 GetWorldPosition();
 
 	float GetRadius() { return radius_; };
-	/// <summary>
-	/// 弾丸リストを取得
-	/// </summary>
-	const std::list<EnemyBullet*>& GetBullets() const { return bullets_; }
+
 };

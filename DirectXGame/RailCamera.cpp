@@ -22,7 +22,7 @@ void RailCamera::Update() {
 	// 移動ベクトル
 	Vector3 move = {0, 0, 0};
 	// 回転ベクトル
-	Vector3 rotate = {0, (1.0f/60.0f)*float(M_PI), 0};
+	Vector3 rotate = {0,/* (1.0f/60.0f)*float(M_PI)*/0, 0};
 
 	worldTransform_.translation_ += move;
 

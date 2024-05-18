@@ -18,6 +18,34 @@
 /// ゲームシーン
 /// </summary>
 class GameScene {
+private: // メンバ変数
+	DirectXCommon* dxCommon_ = nullptr;
+	Input* input_ = nullptr;
+	Audio* audio_ = nullptr;
+
+	Player* player_ = nullptr;
+	Enemy* enemy_ = nullptr;
+	SkyDome* skydome_ = nullptr;
+
+	// テクスチャハンドル
+	uint32_t textureHandle_ = 0;
+
+	// 3Dモデルデータ
+	Model* model_ = nullptr;
+	Model* modelSkydome_ = nullptr;
+
+	// ビュープロジェクション
+	ViewProjection viewProjection_;
+
+	// デバッグカメラ有効
+	bool isDebugCameraActive_ = false;
+	// デバッグカメラ
+	DebugCamera* debugCamera_ = nullptr;
+	// レールカメラ
+	RailCamera* railCamera_ = nullptr;
+
+	//敵弾
+	std::list<EnemyBullet*> enemyBullets_;
 
 public: // メンバ関数
 	/// <summary>
@@ -50,33 +78,9 @@ public: // メンバ関数
 	/// </summary>
 	void CheakAllCollision();
 
-private: // メンバ変数
-	DirectXCommon* dxCommon_ = nullptr;
-	Input* input_ = nullptr;
-	Audio* audio_ = nullptr;
-
-	Player* player_ = nullptr;
-	Enemy* enemy_ = nullptr;
-	SkyDome* skydome_ = nullptr;
-
-	//テクスチャハンドル
-	uint32_t textureHandle_ = 0;
-
-	//3Dモデルデータ
-	Model* model_ = nullptr;
-	Model* modelSkydome_ = nullptr;
-
-	//ビュープロジェクション
-	ViewProjection viewProjection_;
-
-	//デバッグカメラ有効
-	bool isDebugCameraActive_ = false;
-	//デバッグカメラ
-	DebugCamera* debugCamera_ = nullptr;
-	//レールカメラ
-	RailCamera* railCamera_ = nullptr;
-	
 	/// <summary>
-	/// ゲームシーン用
+	/// 敵弾を追加する
 	/// </summary>
+	/// <param name="enemyBullet">敵弾</param>
+	void AddEnemyBullet(EnemyBullet* enemyBullet);
 };

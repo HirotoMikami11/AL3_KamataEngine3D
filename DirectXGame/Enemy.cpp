@@ -2,12 +2,10 @@
 
 // ヘッダ同士でインクルードしあっていないのでセーフ
 #include "Player.h"
+#include "GameScene.h"
 
 Enemy ::~Enemy() {
-	for (EnemyBullet* bullet : bullets_) {
 
-		delete bullet;
-	}
 }
 
 void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& velocity) {
@@ -30,16 +28,7 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 void (Enemy::*Enemy::spFuncTable[])() = {&Enemy::ApproachAction, &Enemy::LeaveAction};
 
 void Enemy::Update() {
-	//
-	/// 寿命が尽きた弾丸を消滅させる
-	//
-	bullets_.remove_if([](EnemyBullet* bullet) {
-		if (bullet->IsDead()) {
-			delete bullet;
-			return true;
-		}
-		return false;
-	});
+
 	// 発射間隔
 	fireTimer_--;
 	if (fireTimer_ <= 0) {
@@ -47,9 +36,7 @@ void Enemy::Update() {
 		// インターバルの値に戻す
 		fireTimer_ = kfireInterval;
 	}
-	for (EnemyBullet* bullet : bullets_) {
-		bullet->Update();
-	}
+
 
 	/// フェーズによって行動を変化させる
 	(this->*spFuncTable[static_cast<size_t>(phase_)])();
@@ -60,10 +47,6 @@ void Enemy::Update() {
 
 void Enemy::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
-
-	for (EnemyBullet* bullet : bullets_) {
-		bullet->Draw(viewProjection);
-	}
 }
 
 void Enemy::ApproachAction() {
@@ -110,8 +93,7 @@ void Enemy::Fire() {
 	// 弾丸を生成・初期化する
 	EnemyBullet* newBullet = new EnemyBullet();
 	newBullet->Initialize(model_, worldTransform_.translation_, velocity);
-	// 弾丸を登録する
-	bullets_.push_back(newBullet);
+	gameScene_->AddEnemyBullet(newBullet);
 }
 
 
