@@ -62,15 +62,6 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-
-	player_->Update();
-
-	if (enemy_ != nullptr) {
-		enemy_->Update();
-	}
-
-	CheakAllCollision();
-
 #ifdef _DEBUG
 	//
 	///	デバッグカメラ
@@ -105,6 +96,15 @@ void GameScene::Update() {
 	}
 
 #endif
+	player_->Update();
+
+	if (enemy_ != nullptr) {
+		enemy_->Update();
+	}
+
+	CheakAllCollision();
+
+
 }
 
 void GameScene::Draw() {
