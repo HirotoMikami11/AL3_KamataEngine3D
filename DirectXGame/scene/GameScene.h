@@ -14,6 +14,8 @@
 #include <SkyDome.h>
 #include <RailCamera.h>
 
+#include <sstream>
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -24,7 +26,7 @@ private: // メンバ変数
 	Audio* audio_ = nullptr;
 
 	Player* player_ = nullptr;
-	//Enemy* enemy_ = nullptr;
+	std::list<Enemy*> enemies_;
 	SkyDome* skydome_ = nullptr;
 
 	// テクスチャハンドル
@@ -46,7 +48,11 @@ private: // メンバ変数
 
 	//敵弾
 	std::list<EnemyBullet*> enemyBullets_;
-	std::list<Enemy*> enemies_;
+
+	//敵発生コマンド
+	std::stringstream enemyPopCommands;
+	bool isWait = false;
+	int waitTimer = 0;
 
 public: // メンバ関数
 	/// <summary>
@@ -89,5 +95,15 @@ public: // メンバ関数
 	/// 敵を追加する
 	/// </summary>
 	/// <param name="enemy">敵</param>
-	void AddEnemy(Enemy* enemy);
+	void AddEnemy(const Vector3 &position);
+
+	/// <summary>
+	/// 敵発生データの読み込み
+	/// </summary>
+	void LoadEnemyPopData();
+
+	/// <summary>
+	/// 敵発生コマンドの更新
+	/// </summary>
+	void UpdateEnemyPopCommands();
 };

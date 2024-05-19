@@ -1,7 +1,9 @@
 #include "GameScene.h"
 #include "AxisIndicator.h"
 #include "TextureManager.h"
+
 #include <cassert>
+#include <fstream>
 
 GameScene::GameScene() {}
 
@@ -61,9 +63,14 @@ void GameScene::Initialize() {
 	// enemy_->SetGameScene(this);
 
 	// 弾丸を生成・初期化する
-	Enemy* newEnemy = new Enemy();
-	newEnemy->Initialize(model_, {0, 10, 200}, {0, 0, -1});
-	AddEnemy(newEnemy);
+	// Enemy* newEnemy = new Enemy();
+	// newEnemy->Initialize(model_, {0, 10, 200}, {0, 0, -1});
+
+
+
+	///csvロードするよ
+	LoadEnemyPopData();
+	AddEnemy(Vector3(0, 10, 200));
 
 	// 天球の生成・初期化
 	skydome_ = new SkyDome();
@@ -77,12 +84,16 @@ void GameScene::Update() {
 
 	player_->Update();
 
+	/// 敵の出現コマンド
+	UpdateEnemyPopCommands();
+
 	/// 敵リストの更新
 	for (Enemy* enemy_ : enemies_) {
 		if (enemy_ != nullptr) {
 			enemy_->Update();
 		}
 	}
+
 	enemies_.remove_if([](Enemy* enemy) {
 		if (enemy->IsDead()) {
 			delete enemy;
@@ -286,11 +297,95 @@ void GameScene::AddEnemyBullet(EnemyBullet* enemyBullet) {
 	enemyBullets_.push_back(enemyBullet);
 }
 
-void GameScene::AddEnemy(Enemy* enemy) {
+void GameScene::AddEnemy(const Vector3& position) {
+	Enemy* newEnemy = new Enemy();
+	newEnemy->Initialize(model_, position, {0, 0, -1});
 	// リストに登録する
-	enemies_.push_back(enemy);
+	enemies_.push_back(newEnemy);
 	// 敵に自キャラのアドレスを渡し、GameSceneがenemy_にplayer_を貸し出す
-	enemy->SetPlayer(player_);
+	newEnemy->SetPlayer(player_);
 	// 敵キャラにゲームシーンを渡す
-	enemy->SetGameScene(this);
+	newEnemy->SetGameScene(this);
+}
+
+/// <summary>
+/// 敵発生データの読み込み
+/// </summary>
+void GameScene::LoadEnemyPopData() {
+
+	// ファイルを開く
+	std::ifstream file;
+	file.open("Resources/enemyPop.csv");
+	assert(file.is_open());
+
+	// ファイルの内容を文字列ストリームにコピー
+	enemyPopCommands << file.rdbuf();
+
+	// ファイルを閉じる
+	file.close();
+}
+
+void GameScene::UpdateEnemyPopCommands() {
+
+
+	if (isWait) {
+		waitTimer--;
+		if (waitTimer<=0) {
+		//待機完了
+			isWait = false;
+		}
+		return;
+	}
+
+	// 1行列の文字列を入れる変数
+	std::string line;
+
+	// コマンド実行ループ
+	while (getline(enemyPopCommands, line)) {
+		// 1行分の文字列をストリームに変換して解析しやすくなる
+		std::istringstream line_stream(line); // 1行取り出す
+
+		std::string word;
+		//,区切りで行の先頭文字列を取得
+		getline(line_stream, word, ','); //,が現れるまでの文字列をwordに入れる
+
+		//"//"から始める行はコメント
+		if (word.find("//") == 0) {
+				// コメント行列を飛ばす
+				continue;
+			}
+
+		//
+		/// POPコマンド
+		//
+		if (word.find("POP") == 0) {
+			// x座標
+			getline(line_stream, word, ',');
+			float x = (float)std::atof(word.c_str());
+			// y座標
+			getline(line_stream, word, ',');
+			float y = (float)std::atof(word.c_str());
+			// z座標
+			getline(line_stream, word, ',');
+			float z = (float)std::atof(word.c_str());
+
+			// 敵発生
+			AddEnemy(Vector3(x, y, z));
+		}
+
+		//
+		/// WAITコマンド
+		//
+		else if(word.find("WAIT") == 0) {
+			getline(line_stream, word, ',');
+			// 待ち時間
+			int32_t waitTime = atoi(word.c_str());
+
+			// 待機開始
+			isWait = true;
+			waitTimer = waitTime;
+			// コマンドループを抜ける
+			break;
+		}
+	}
 }
