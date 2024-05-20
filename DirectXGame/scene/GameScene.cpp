@@ -29,7 +29,10 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 
 	// ファイル名を指定してテクスチャを読み込む
-	textureHandle_ = TextureManager::Load("uvChecker.png");
+	playerTextureHandle_ = TextureManager::Load("uvChecker.png");
+	playerBulletTextureHandle_ = TextureManager::Load("white1x1.png");
+	enemyTextureHandle_ = TextureManager::Load("cube/cube.jpg");
+	enemyBulletTextureHandle_ = TextureManager::Load("axis/axis.jpg");
 	// 3Dモデルの生成
 	model_ = Model::Create();
 	modelSkydome_ = Model::CreateFromOBJ("skyDome", true);
@@ -52,7 +55,7 @@ void GameScene::Initialize() {
 	player_ = new Player();
 	Vector3 playerPos(0, 0, railCamera_->GetPositionZ() + 50);
 	// 自キャラの初期化
-	player_->Initialize(model_, textureHandle_, playerPos);
+	player_->Initialize(model_,playerTextureHandle_, playerBulletTextureHandle_, playerPos);
 
 	// 敵の初期化
 	// enemy_ = new Enemy();
@@ -66,9 +69,7 @@ void GameScene::Initialize() {
 	// Enemy* newEnemy = new Enemy();
 	// newEnemy->Initialize(model_, {0, 10, 200}, {0, 0, -1});
 
-
-
-	///csvロードするよ
+	/// csvロードするよ
 	LoadEnemyPopData();
 	AddEnemy(Vector3(0, 10, 200));
 
@@ -299,7 +300,7 @@ void GameScene::AddEnemyBullet(EnemyBullet* enemyBullet) {
 
 void GameScene::AddEnemy(const Vector3& position) {
 	Enemy* newEnemy = new Enemy();
-	newEnemy->Initialize(model_, position, {0, 0, -1});
+	newEnemy->Initialize(model_, enemyTextureHandle_,enemyBulletTextureHandle_,position, {0, 0, -1});
 	// リストに登録する
 	enemies_.push_back(newEnemy);
 	// 敵に自キャラのアドレスを渡し、GameSceneがenemy_にplayer_を貸し出す
@@ -327,11 +328,10 @@ void GameScene::LoadEnemyPopData() {
 
 void GameScene::UpdateEnemyPopCommands() {
 
-
 	if (isWait) {
 		waitTimer--;
-		if (waitTimer<=0) {
-		//待機完了
+		if (waitTimer <= 0) {
+			// 待機完了
 			isWait = false;
 		}
 		return;
@@ -351,9 +351,9 @@ void GameScene::UpdateEnemyPopCommands() {
 
 		//"//"から始める行はコメント
 		if (word.find("//") == 0) {
-				// コメント行列を飛ばす
-				continue;
-			}
+			// コメント行列を飛ばす
+			continue;
+		}
 
 		//
 		/// POPコマンド
@@ -376,7 +376,7 @@ void GameScene::UpdateEnemyPopCommands() {
 		//
 		/// WAITコマンド
 		//
-		else if(word.find("WAIT") == 0) {
+		else if (word.find("WAIT") == 0) {
 			getline(line_stream, word, ',');
 			// 待ち時間
 			int32_t waitTime = atoi(word.c_str());

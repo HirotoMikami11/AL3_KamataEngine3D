@@ -30,7 +30,10 @@ private: // メンバ変数
 	SkyDome* skydome_ = nullptr;
 
 	// テクスチャハンドル
-	uint32_t textureHandle_ = 0;
+	uint32_t playerTextureHandle_ = 0;
+	uint32_t playerBulletTextureHandle_ = 0;
+	uint32_t enemyTextureHandle_ = 0;
+	uint32_t enemyBulletTextureHandle_ = 0;
 
 	// 3Dモデルデータ
 	Model* model_ = nullptr;

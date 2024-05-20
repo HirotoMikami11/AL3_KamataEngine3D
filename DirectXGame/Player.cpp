@@ -7,13 +7,14 @@ Player::~Player() {
 	}
 }
 
-void Player::Initialize(Model* model, uint32_t textureHandle, const Vector3& position) {
+void Player::Initialize(Model* model, uint32_t playerTextureHandle,uint32_t bulletTextureHandle, const Vector3& position) {
 	/// 1.nullptrチェック
 	assert(model);
 
 	/// 2.データをメンバ変数に移し替える
 	// テクスチャハンドル
-	textureHandle_ = textureHandle;
+	textureHandle_ = playerTextureHandle;
+	bulletTextureHandle_ = bulletTextureHandle;
 	// 3Dモデルデータ
 	model_ = model;
 
@@ -145,7 +146,7 @@ void Player::Attack() {
 
 		// 弾丸を生成・初期化する
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, GetWorldPosition(), velocity);
+		newBullet->Initialize(model_,bulletTextureHandle_, GetWorldPosition(), velocity);
 		// 弾丸を登録する
 		bullets_.push_back(newBullet);
 	}

@@ -6,11 +6,14 @@
 
 Enemy ::~Enemy() {}
 
-void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& velocity) {
+void Enemy::Initialize(Model* model, uint32_t enemyTextureHandle, uint32_t bulletTextureHandle, const Vector3& position, const Vector3& velocity) {
 	// nullcheak
 	assert(model);
+
 	//
-	textureHandle_ = TextureManager::Load("cube/cube.jpg");
+	textureHandle_ = enemyTextureHandle;
+	bulletTextureHandle_ = bulletTextureHandle;
+
 	// 3Dモデル
 	model_ = model;
 	/// 3.ワールド変換の初期化
@@ -87,15 +90,13 @@ void Enemy::Fire() {
 
 	// 弾丸を生成・初期化する
 	EnemyBullet* newBullet = new EnemyBullet();
-	newBullet->Initialize(model_, worldTransform_.translation_, velocity);
+	newBullet->Initialize(model_,bulletTextureHandle_, worldTransform_.translation_, velocity);
 	gameScene_->AddEnemyBullet(newBullet);
 }
 
 void Enemy::OnCollision() {
 	// 何もしない
 	isDead_ = true;
-
-
 }
 
 Vector3 Enemy::GetWorldPosition() {

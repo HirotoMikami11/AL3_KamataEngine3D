@@ -1,12 +1,12 @@
 #include "PlayerBullet.h"
 
-void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vector3& velocity) {
+void PlayerBullet::Initialize(Model* model, uint32_t textureHandle, const Vector3& position, const Vector3& velocity) {
 	/// 1.nullptrチェック
 	assert(model);
 
 	/// 2.データをメンバ変数に移し替える
 	// テクスチャハンドル
-	textureHandle_ = TextureManager::Load("white1x1.png");
+	textureHandle_ = textureHandle;
 	// 3Dモデルデータ
 	model_ = model;
 

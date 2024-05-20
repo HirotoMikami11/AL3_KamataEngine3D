@@ -28,6 +28,7 @@ private:
 	Model* model_ = nullptr;
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
+	uint32_t bulletTextureHandle_ = 0u;
 
 	/// 弾丸
 	std::list<PlayerBullet*> bullets_;
@@ -46,7 +47,7 @@ public:
 	/// </summary>
 	/// <param name="model">モデル</param>
 	/// <param name="textureHandle">テクスチャハンドル</param>
-	void Initialize(Model* model, uint32_t textureHandle,const Vector3& position);
+	void Initialize(Model* model, uint32_t playerTextureHandle, uint32_t bulletTextureHandle, const Vector3& position);
 
 	/// <summary>
 	/// 更新

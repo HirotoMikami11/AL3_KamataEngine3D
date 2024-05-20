@@ -1,11 +1,11 @@
 #include "EnemyBullet.h"
 
-void EnemyBullet::Initialize(Model* model, const Vector3& position, const Vector3& velocity) {
+void EnemyBullet::Initialize(Model* model, uint32_t textureHandle, const Vector3& position, const Vector3& velocity) {
 
 	assert(model);
 	model_ = model;
 	//テクスチャ読込
-	textureHandle_ = TextureManager::Load("axis/axis.jpg");
+	textureHandle_ = textureHandle;
 	//ワールドトランスフォーム
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;

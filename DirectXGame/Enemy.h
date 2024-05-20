@@ -38,6 +38,7 @@ private:
 	Model* model_ = nullptr;
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
+	uint32_t bulletTextureHandle_ = 0u;
 	// 速度
 	Vector3 velocity_;
 	// フェーズ
@@ -77,7 +78,7 @@ public:
 	/// <param name="model">モデル</param>
 	/// <param name="position">座標</param>
 	/// <param name="velocity">速さ</param>
-	void Initialize(Model* model, const Vector3& position, const Vector3& velocity);
+	void Initialize(Model* model, uint32_t enemyTextureHandle, uint32_t bulletTextureHandle, const Vector3& position, const Vector3& velocity);
 
 	/// <summary>
 	/// 更新
