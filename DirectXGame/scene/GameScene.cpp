@@ -41,10 +41,10 @@ void GameScene::Initialize() {
 	viewProjection_.Initialize();
 	// デバッグカメラの生成(引数は画面の横幅、縦幅)
 	debugCamera_ = new DebugCamera(WinApp::kWindowWidth, WinApp::kWindowHeight);
-
+	
 	// レールカメラの生成
 	railCamera_ = new RailCamera();
-	railCamera_->Initialize({0, 0, -30}, {0, 0, 0});
+	railCamera_->Initialize({0, 0, 0}, {0, 0, 0});
 
 	// 軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
@@ -53,7 +53,7 @@ void GameScene::Initialize() {
 
 	// 自キャラの生成
 	player_ = new Player();
-	Vector3 playerPos(0, 0, railCamera_->GetPositionZ() + 50);
+	Vector3 playerPos(0, 0, railCamera_->GetPositionZ() + 15);
 	// 自キャラの初期化
 	player_->Initialize(model_,playerTextureHandle_, playerBulletTextureHandle_, playerPos);
 
@@ -83,7 +83,7 @@ void GameScene::Initialize() {
 
 void GameScene::Update() {
 
-	player_->Update();
+	player_->Update(viewProjection_);
 
 	/// 敵の出現コマンド
 	UpdateEnemyPopCommands();
@@ -196,6 +196,7 @@ void GameScene::Draw() {
 	for (EnemyBullet* bullet : enemyBullets_) {
 		bullet->Draw(viewProjection_);
 	}
+	
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
@@ -207,6 +208,11 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+
+	//2DのUiを描画
+	player_->DrawUI();
+	//
+
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

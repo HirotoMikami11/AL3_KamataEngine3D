@@ -336,6 +336,29 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 
 	return AffineMatrix;
 };
+// 　3.ビューポート行列
+Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth) {
+
+	assert(minDepth <= maxDepth);
+	Matrix4x4 ViewportMatrix = {0};
+	ViewportMatrix.m[0][0] = width / 2;
+	ViewportMatrix.m[1][1] = -(height / 2);
+	ViewportMatrix.m[2][2] = maxDepth - minDepth;
+	ViewportMatrix.m[3][0] = left + (width / 2);
+	ViewportMatrix.m[3][1] = top + (height / 2);
+	ViewportMatrix.m[3][2] = minDepth;
+	ViewportMatrix.m[3][3] = 1;
+
+	return ViewportMatrix;
+}
+
+Vector3 multiply(const Matrix4x4& matrix, const Vector3& vec) {
+	float x = matrix.m[0][0] * vec.x + matrix.m[0][1] * vec.y + matrix.m[0][2] * vec.z + matrix.m[0][3] * 1.0f;
+	float y = matrix.m[1][0] * vec.x + matrix.m[1][1] * vec.y + matrix.m[1][2] * vec.z + matrix.m[1][3] * 1.0f;
+	float z = matrix.m[2][0] * vec.x + matrix.m[2][1] * vec.y + matrix.m[2][2] * vec.z + matrix.m[2][3] * 1.0f;
+
+	return Vector3(x, y, z);
+}
 
 // 加算
 Matrix4x4& operator+=(Matrix4x4 m1, Matrix4x4& m2) {
@@ -420,3 +443,4 @@ Vector3& operator-=(Vector3& v1, Vector3& v2) {
 	v1 = Vector3Subtract(v1, v2);
 	return v1;
 };
+

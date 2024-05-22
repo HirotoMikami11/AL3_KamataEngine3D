@@ -48,8 +48,9 @@ Matrix4x4 MakeRotateZMatrix(float radian);
 
 // アフィン変換行列
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
+Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth);
 
-//
+	//
 ///	演算の死のオーバーロード
 //
 
@@ -91,6 +92,7 @@ Vector3 TransforNormal(const Vector3& v, const Matrix4x4& m);
 // 3次元ベクトルの距離
 float Vector3Distance(const Vector3 v1, const Vector3 v2);
 
+Vector3 multiply(const Matrix4x4& matrix, const Vector3& vec);
 //
 ///	演算の死のオーバーロード
 //
