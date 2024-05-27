@@ -20,9 +20,9 @@ void RailCamera::Initialize(const Vector3& position, const Vector3& rotate) {
 void RailCamera::Update() {
 
 	// 移動ベクトル
-	Vector3 move = {0, 0, 0};
+	Vector3 move = {0, 0.05f, 0};
 	// 回転ベクトル
-	Vector3 rotate = {0,/* (1.0f/60.0f)*float(M_PI)*/0, 0};
+	Vector3 rotate = {0,(1.0f/360.0f)*float(M_PI), 0};
 
 	worldTransform_.translation_ += move;
 
@@ -45,6 +45,7 @@ void RailCamera::Update() {
 	ImGui::Begin("RailCamera");
 	ImGui::SliderFloat3("RailCamera_translation", &worldTransform_.translation_.x, -50.0f, 50.0f);
 	ImGui::SliderFloat3("RailCamera_rotation", &worldTransform_.rotation_.x, 0.0f, 2.0f*float(M_PI));
+	worldTransform_.UpdateMatrix();
 	ImGui::End();
 
 }

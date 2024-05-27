@@ -155,7 +155,7 @@ void Player::Draw(ViewProjection& viewProjection) {
 		bullet->Draw(viewProjection);
 	}
 
-	model_->Draw(worldTransform3Dreticle_, viewProjection);
+	//model_->Draw(worldTransform3Dreticle_, viewProjection);
 };
 
 void Player::DrawUI() { sprite2DReticle_->Draw(); }
@@ -201,6 +201,7 @@ void Player::AttackForPad(XINPUT_STATE& joyState) {
 	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
 		return;
 	}
+	
 
 	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 		//// 弾丸の速度

@@ -322,6 +322,7 @@ void GameScene::LoadEnemyPopData() {
 
 void GameScene::UpdateEnemyPopCommands() {
 
+	//クールタイムの処理
 	if (isWait) {
 		waitTimer--;
 		if (waitTimer <= 0) {
