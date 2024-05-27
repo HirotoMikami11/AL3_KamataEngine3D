@@ -1,5 +1,4 @@
 #include <Player.h>
-#include <WinApp.h>
 
 Player::~Player() {
 	for (PlayerBullet* bullet : bullets_) {
@@ -36,7 +35,7 @@ void Player::Initialize(Model* model, uint32_t playerTextureHandle, uint32_t bul
 
 	worldTransform_.translation_ = position;
 
-	matViewport= MakeViewportMatrix(0, 0, 1280, 720, 0, 1);
+	matViewport = MakeViewportMatrix(0, 0, 1280, 720, 0, 1);
 	radius_ = 1;
 }
 
@@ -68,20 +67,30 @@ void Player::Update(const ViewProjection& viewProjection) {
 	// キャラクターの移動速さ
 	const float kCharacterSpeed = 0.2f;
 
-	// 押した方向で移動ベクトルを変更（左右）
-	if (input_->PushKey(DIK_LEFT)) {
-		move.x -= kCharacterSpeed;
-	} else if (input_->PushKey(DIK_RIGHT)) {
-		move.x += kCharacterSpeed;
+	// ゲームパッドの状態を知る変数
+	XINPUT_STATE joyState;
+
+	// ゲームパッド取得状況
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+		move.x += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * kCharacterSpeed;
+		move.y += (float)joyState.Gamepad.sThumbLY / SHRT_MAX * kCharacterSpeed;
 	}
 
-	// 押した方向で移動ベクトルを変更（上下）
-	if (input_->PushKey(DIK_UP)) {
-		move.y += kCharacterSpeed;
-	} else if (input_->PushKey(DIK_DOWN)) {
-		move.y -= kCharacterSpeed;
-	}
+	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
+		// 押した方向で移動ベクトルを変更（左右）
+		if (input_->PushKey(DIK_LEFT)) {
+			move.x -= kCharacterSpeed;
+		} else if (input_->PushKey(DIK_RIGHT)) {
+			move.x += kCharacterSpeed;
+		}
 
+		// 押した方向で移動ベクトルを変更（上下）
+		if (input_->PushKey(DIK_UP)) {
+			move.y += kCharacterSpeed;
+		} else if (input_->PushKey(DIK_DOWN)) {
+			move.y -= kCharacterSpeed;
+		}
+	}
 	// 座標移動（ベクトルの加算）
 	worldTransform_.translation_ += move;
 
@@ -98,20 +107,25 @@ void Player::Update(const ViewProjection& viewProjection) {
 	//
 	///  行列更新
 	//
-	
+
 	worldTransform_.UpdateMatrix();
 	//
 	/// 　3Dレティクルの配置
 	//
 
 	// 自機のワールド座標から3Dレティクルのワールド座標を計算
-	Set3DreticlePosition();
 
-	convertWorldToScreenCoordsReticle(viewProjection);
+	Set3DreticlePositionForMouse(viewProjection,joyState);
+	Set3DreticlePositionForPad(viewProjection,joyState);
+	
+	// convertWorldToScreenCoordsReticle(viewProjection);
+
 	//
 	/// キャラクター攻撃処理
 	//
-	Attack();
+	
+	Attack(joyState);
+	AttackForPad(joyState);
 
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Update();
@@ -155,10 +169,38 @@ void Player::Rotate() {
 	}
 }
 
-void Player::Attack() {
-	// SPACEキーで発射
-	if (input_->TriggerKey(DIK_SPACE)) {
+void Player::Attack(XINPUT_STATE& joyState) {
 
+	///未接続の時のみキーボードで移動
+	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
+		// SPACEキーで発射
+		if (input_->TriggerKey(DIK_SPACE)) {
+
+			//// 弾丸の速度
+			const float kBulletSpeed = 3.0f;
+
+			Vector3 velocity = Vector3Subtract(GetWorldPosition3Dreticle(), GetWorldPosition());
+
+			velocity = Vector3Multiply(kBulletSpeed, Vector3Normalize(velocity));
+
+			// 弾丸を生成・初期化する
+			PlayerBullet* newBullet = new PlayerBullet();
+			newBullet->Initialize(model_, bulletTextureHandle_, GetWorldPosition(), velocity);
+			// 弾丸を登録する
+			bullets_.push_back(newBullet);
+		}
+	}
+}
+/// <summary>
+/// パッドで弾丸を発射
+/// </summary>
+void Player::AttackForPad(XINPUT_STATE& joyState) {
+	// 　ゲームパッド未接続なら何もせずに抜ける
+	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
+		return;
+	}
+
+	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 		//// 弾丸の速度
 		const float kBulletSpeed = 3.0f;
 
@@ -173,7 +215,6 @@ void Player::Attack() {
 		bullets_.push_back(newBullet);
 	}
 }
-
 void Player::OnCollision() {
 	// 何もしない
 }
@@ -198,11 +239,100 @@ void Player::Set3DreticlePosition() {
 	worldTransform3Dreticle_.UpdateMatrix();
 }
 
+void Player::Set3DreticlePositionForMouse(const ViewProjection& viewProjection, XINPUT_STATE& joyState) {
+
+	///パッドが未接続の場合のみ
+	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
+
+		POINT mousePosition;
+
+		// マウス座標を取得（スクリーン座標上）
+		GetCursorPos(&mousePosition);
+
+		// マウス座標を2Dレティクルのスプライトに代入
+		HWND hwnd = WinApp::GetInstance()->GetHwnd();
+		ScreenToClient(hwnd, &mousePosition);
+
+		sprite2DReticle_->SetPosition(Vector2(float(mousePosition.x), float(mousePosition.y)));
+
+		// ビュー行列、射影行列、ビューポート行列の合成行列を計算する
+		Matrix4x4 matVPV = Multiply(Multiply(viewProjection.matView, viewProjection.matProjection), matViewport);
+		// 合成行列の逆行列を計算
+		Matrix4x4 matInverseVPV = Inverse(matVPV);
+		Matrix4x4 a = Multiply(matVPV, matInverseVPV);
+
+		// ニアクリップ面上のワールド座標を得る	(スクリーンからワールド)
+		Vector3 posNear = Vector3((float)mousePosition.x, (float)mousePosition.y, 0);
+		posNear = Transform(posNear, matInverseVPV);
+		// ファークリップ面上のワールド座標を得る	(スクリーンからワールド)
+		Vector3 posFar = Vector3((float)mousePosition.x, (float)mousePosition.y, 1);
+		posFar = Transform(posFar, matInverseVPV);
+		// マウスの前方ベクトルを計算する
+		Vector3 mouseDirection = Vector3Subtract(posFar, posNear);
+		mouseDirection = Vector3Normalize(mouseDirection);
+
+		// カメラから照準オブジェクトの距離
+		const float kDistanceTestObject = 50;
+		worldTransform3Dreticle_.translation_ = Vector3Add(posNear, Vector3Multiply(kDistanceTestObject, mouseDirection));
+		worldTransform3Dreticle_.UpdateMatrix();
+
+		// ニアクリップ面上のワールド座標から一定距離前進したところに3Dレティクルを配置
+		ImGui::Begin("Player");
+		ImGui::Text("Near:(%+.2f,%+.2f,%+.2f,)", posNear.x, posNear.y, posNear.z);
+		ImGui::Text("Far:(%+.2f,%+.2f,%+.2f,)", posFar.x, posFar.y, posFar.z);
+
+		ImGui::End();
+	}
+}
+
+void Player::Set3DreticlePositionForPad(const ViewProjection& viewProjection, XINPUT_STATE& joyState) {
+
+	Vector2 spritePosition = sprite2DReticle_->GetPosition();
+
+	/// パッドが接続されているときのみ
+	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
+		return;
+	}
+
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+		spritePosition.x += (float)joyState.Gamepad.sThumbRX / SHRT_MAX * 5.0f;
+		spritePosition.y -= (float)joyState.Gamepad.sThumbRY / SHRT_MAX * 5.0f;
+	}
+
+	sprite2DReticle_->SetPosition(Vector2(spritePosition));
+
+	// ビュー行列、射影行列、ビューポート行列の合成行列を計算する
+	Matrix4x4 matVPV = Multiply(Multiply(viewProjection.matView, viewProjection.matProjection), matViewport);
+	// 合成行列の逆行列を計算
+	Matrix4x4 matInverseVPV = Inverse(matVPV);
+	Matrix4x4 a = Multiply(matVPV, matInverseVPV);
+
+	// ニアクリップ面上のワールド座標を得る	(スクリーンからワールド)
+	Vector3 posNear = Vector3((float)spritePosition.x, (float)spritePosition.y, 0);
+	posNear = Transform(posNear, matInverseVPV);
+	// ファークリップ面上のワールド座標を得る	(スクリーンからワールド)
+	Vector3 posFar = Vector3((float)spritePosition.x, (float)spritePosition.y, 1);
+	posFar = Transform(posFar, matInverseVPV);
+	// マウスの前方ベクトルを計算する
+	Vector3 mouseDirection = Vector3Subtract(posFar, posNear);
+	mouseDirection = Vector3Normalize(mouseDirection);
+
+	// カメラから照準オブジェクトの距離
+	const float kDistanceTestObject = 50;
+	worldTransform3Dreticle_.translation_ = Vector3Add(posNear, Vector3Multiply(kDistanceTestObject, mouseDirection));
+	worldTransform3Dreticle_.UpdateMatrix();
+
+	// ニアクリップ面上のワールド座標から一定距離前進したところに3Dレティクルを配置
+	ImGui::Begin("Player");
+	ImGui::Text("Near:(%+.2f,%+.2f,%+.2f,)", posNear.x, posNear.y, posNear.z);
+	ImGui::Text("Far:(%+.2f,%+.2f,%+.2f,)", posFar.x, posFar.y, posFar.z);
+
+	ImGui::End();
+}
+
 void Player::convertWorldToScreenCoordsReticle(const ViewProjection& viewProjection) {
 	// 3Dレティクルのワールド座標から2Dレティクルのスクリーン座標を計算
 	Vector3 positionReticle = GetWorldPosition3Dreticle();
-
-
 
 	// ビュー行列とプロジェクション行列、ビューポート行列を合成する
 	Matrix4x4 matViewProjectionViewport = Multiply(viewProjection.matView, Multiply(viewProjection.matProjection, matViewport));

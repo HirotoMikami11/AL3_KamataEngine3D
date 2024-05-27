@@ -9,7 +9,7 @@
 #include <MyMath.h>
 #include <list>
 #include <Sprite.h>
-
+#include <WinApp.h>
 
 /// <summary>
 /// 自キャラ
@@ -17,10 +17,7 @@
 
 class Player {
 private:
-	/// <summary>
-	/// 弾丸を発射
-	/// </summary>
-	void Attack();
+
 
 	// キーボード入力
 	Input* input_ = nullptr;
@@ -46,7 +43,16 @@ private:
 
 	//半径
 	float radius_;
-	
+	/// <summary>
+	/// 弾丸を発射
+	/// </summary>
+	void Attack(XINPUT_STATE& joyState);
+
+	/// <summary>
+	/// パッドで弾丸を発射
+	/// </summary>
+	void AttackForPad(XINPUT_STATE& joyState);
+
 public:
 	/// <summary>
 	/// デストラクタ
@@ -100,7 +106,14 @@ public:
 	/// <summary>
 	/// マウス3Dレティクルの配置
 	/// </summary>
-	void Set3DreticlePositionForMouse(const ViewProjection& viewProjection);
+	void Set3DreticlePositionForMouse(const ViewProjection& viewProjection, XINPUT_STATE &joyState);
+
+
+	/// <summary>
+	/// パッド3Dレティクルの配置
+	/// </summary>
+	void Set3DreticlePositionForPad(const ViewProjection& viewProjection, XINPUT_STATE &joyState);
+
 
 	/// <summary>
 	/// 3Dレティクルのワールド座標を2Dレティクルのスクリーン座標に変換
