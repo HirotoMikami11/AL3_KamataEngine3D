@@ -70,12 +70,14 @@ void Player::Update(const ViewProjection& viewProjection) {
 	// ゲームパッドの状態を知る変数
 	XINPUT_STATE joyState;
 
-	// ゲームパッド取得状況
+	// ゲームパッドで移動
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 		move.x += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * kCharacterSpeed;
 		move.y += (float)joyState.Gamepad.sThumbLY / SHRT_MAX * kCharacterSpeed;
 	}
 
+
+	//キーボードで移動
 	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
 		// 押した方向で移動ベクトルを変更（左右）
 		if (input_->PushKey(DIK_LEFT)) {

@@ -57,18 +57,6 @@ void GameScene::Initialize() {
 	// 自キャラの初期化
 	player_->Initialize(model_,playerTextureHandle_, playerBulletTextureHandle_, playerPos);
 
-	// 敵の初期化
-	// enemy_ = new Enemy();
-	// enemy_->Initialize(model_, {0, 10, 200}, {0, 0, -1});
-	//// 敵に自キャラのアドレスを渡し、GameSceneがenemy_にplayer_を貸し出す
-	// enemy_->SetPlayer(player_);
-	//// 敵キャラにゲームシーンを渡す
-	// enemy_->SetGameScene(this);
-
-	// 弾丸を生成・初期化する
-	// Enemy* newEnemy = new Enemy();
-	// newEnemy->Initialize(model_, {0, 10, 200}, {0, 0, -1});
-
 	/// csvロードするよ
 	LoadEnemyPopData();
 	AddEnemy(Vector3(0, 10, 200));

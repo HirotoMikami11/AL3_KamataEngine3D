@@ -73,9 +73,7 @@ void Enemy::Fire() {
 	assert(player_);
 	// 弾丸の速度
 	const float kBulletSpeed = -1.0f;
-	// Vector3 velocity(0, 0, kBulletSpeed);
 	//// 速度ベクトルを敵の向きに合わせて回転させる
-	// velocity = TransforNormal(velocity, worldTransform_.matWorld_);
 
 	// 自キャラのワールド座標を取得する
 	Vector3 playerPos_ = player_->GetWorldPosition();
